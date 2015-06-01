@@ -1,18 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package warcraft;
 
+import warcraft.logic.Move;
 import warcraft.logic.TextManager;
 import warcraft.logic.Utility;
 
-/**
- *
- * @author Josue
- */
 public class Main {
 
     /**
@@ -20,7 +11,8 @@ public class Main {
      */
     public static void main(String[] args) {
         TextManager textManager = TextManager.getInstance();
-        textManager.createStrategy();
+        //textManager.createStrategy();
+        textManager.selectMovesForBoat(1,0,200000);
     }
     
 }
