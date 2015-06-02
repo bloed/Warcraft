@@ -1,5 +1,6 @@
 package warcraft;
 
+import java.util.ArrayList;
 import warcraft.logic.Move;
 import warcraft.logic.TextManager;
 import warcraft.logic.Utility;
@@ -12,7 +13,10 @@ public class Main {
     public static void main(String[] args) {
         TextManager textManager = TextManager.getInstance();
         //textManager.createStrategy();
-        textManager.selectMovesForBoat(1,0,200000);
+        ArrayList<Move> test = textManager.selectMovesForBoat(113,185000,186000);
+        System.out.println("---------------------------------------");
+        textManager.mergeMovesForBoat(test, 0, test.size());
+        System.out.println("==========================================");
     }
     
 }

@@ -19,7 +19,7 @@ public class Move {
     public Integer getId(){
         return _Id;
     }
-    public String getMove(){
+    public String getAction(){
         return _Action;
     }
     public Double getValue(){

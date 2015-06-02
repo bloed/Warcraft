@@ -23,12 +23,12 @@ public class TextManager {
         }
         return _Instance;
     }
-    public void createStrategy(){
+    public void generateTXTStrategy(){
         //creates the txt with the 200 000 registers of possible moves
         PrintWriter writer  = createFile(Constants.FILENAME);
         if(writer!=null){
             for(int counter = 0; counter < Constants.AMOUNT_OF_REGISTERS ; counter++){
-                double degree = (double)Utility.generateRand(0, 100)/100;
+                double degree = (double)Utility.generateRand(10, 100)/100;
                 Integer id = Utility.generateRand(100, 1000);
                 Integer intAction = Utility.generateRand(0, 2);
                 String stringAction = _Moves[intAction];
@@ -71,10 +71,20 @@ public class TextManager {
             return null;
         }
     }
+    public ArrayList<Move> mainSelectMovesForBoat(Integer pBoatId){
+        //divides the 200000 records and send them to execute in parallel
+        Integer amountOfProcessors = Runtime.getRuntime().availableProcessors();
+        Integer amountOfRecordsPerProcessor = Constants.AMOUNT_OF_REGISTERS / amountOfProcessors;
+        System.out.println(amountOfRecordsPerProcessor);
+        
+        return null;
+    }
     public ArrayList<Move> selectMovesForBoat(Integer pBoatId, Integer pStart, Integer pFinal){
-        //both pStart is inclusive and pFinal is exlusive
+        //both pStart is inclusive and pFinal is exlusive. This runs in parallel.
         Scanner scanner = openFile(Constants.FILENAME);
         String currentRecord;
+        Integer currentId;
+        ArrayList<Move> moves = new ArrayList();  
         if(scanner != null){
             Integer amountToIgnore = pStart;
             while(amountToIgnore != 0){
@@ -84,13 +94,46 @@ public class TextManager {
             Integer amountToRead =pFinal - pStart;
             while(amountToRead != 0){
                 currentRecord = scanner.next();
-                //ver si coincide con id
-                //agregarlo a la lista
+                currentId = getRecordId(currentRecord);
+                if(currentId == pBoatId ||currentId%10 == pBoatId%10){//if same Id, or id that ends wit the same digit
+                    moves.add(processRecord(currentRecord));
+                    System.out.println(moves.get(moves.size()-1).toString());
+                }
                 amountToRead--;
             }
             scanner.close();
         }
-        return null;
+        return moves;
+    }
+    public ArrayList<Move> mergeMovesForBoat(ArrayList<Move> pList, Integer pStart, Integer pFinal){
+        //both pStart is inclusive and pFinal is exlusive. This runs in parallel.
+        ArrayList<Move> newMoves = new ArrayList();  
+        String currentAction = pList.get(0).getAction();
+        Double degree1 = pList.get(0).getDegree();
+        Double value1 = pList.get(0).getValue();
+        Double degree2 = degree1;//in case there is only one action
+        Double value2 = value1;
+        for(int currentIndex = pStart + 1 ; currentIndex < pFinal; currentIndex++){
+            String caca = pList.get(currentIndex).getAction();
+            if(!pList.get(currentIndex).getAction().equals(currentAction)){
+                degree1 = pList.get(currentIndex).getDegree();
+                value1 = pList.get(currentIndex).getValue();
+                newMoves.add(new Move(degree2,0,currentAction,value2));
+                System.out.println(degree2+"|"+"0"+"|"+currentAction+"|"+value2);
+                currentAction = invertAction(currentAction);
+                degree2 = degree1;//in case there is only one action
+                value2 = value1;
+            }
+            else{//same action, we have to merge it
+                degree2 = (degree1 + pList.get(currentIndex).getDegree())%degree1;//acumulator of degrees
+                value2 = (pList.get(currentIndex).getValue() + value1)/2;//acumulator of values
+                value1 =  value2;
+                degree1 = degree2;
+            }
+        }
+        newMoves.add(new Move(degree2,0,currentAction,value2));
+        System.out.println(degree2+"|"+"0"+"|"+currentAction+"|"+value2);
+        return newMoves;
     }
     private Move processRecord(String pRecord){
         //receives a record of the form : degree|id|action|value
@@ -118,8 +161,15 @@ public class TextManager {
         pRecord = pRecord.substring(delimeter+1, pRecord.length());
         delimeter = pRecord.indexOf("|");
         String id = pRecord.substring(0, delimeter);
-        System.out.println(id);
         return Integer.parseInt(id);
+    }
+    private String invertAction(String pAction){
+        if (pAction.equals("avanzar")){
+            return "disparar";
+        }
+        else{
+            return "avanzar";
+        }
     }
 }
 /*Scanner scanner = openFile(Constants.FILENAME);
