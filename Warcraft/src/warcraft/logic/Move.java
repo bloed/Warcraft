@@ -2,10 +2,10 @@ package warcraft.logic;
 
 
 public class Move {
-    private Double _Degree;
-    private Integer _Id;
-    private String _Action;
-    private Double _Value;
+    private final Double _Degree;
+    private final Integer _Id;
+    private final String _Action;
+    private final Double _Value;
     
     public Move(Double pDegree, Integer pId, String pAction, Double pValue){
         _Degree = pDegree;
@@ -28,5 +28,5 @@ public class Move {
     @Override
     public String toString(){
         return _Degree + "|" + _Id + "|" + _Action + "|" + _Value;
-     }
+    }
 }

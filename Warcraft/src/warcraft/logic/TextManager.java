@@ -76,7 +76,6 @@ public class TextManager {
         Integer amountOfProcessors = Runtime.getRuntime().availableProcessors();
         Integer amountOfRecordsPerProcessor = Constants.AMOUNT_OF_REGISTERS / amountOfProcessors;
         System.out.println(amountOfRecordsPerProcessor);
-        
         return null;
     }
     public ArrayList<Move> selectMovesForBoat(Integer pBoatId, Integer pStart, Integer pFinal){
@@ -97,7 +96,6 @@ public class TextManager {
                 currentId = getRecordId(currentRecord);
                 if(currentId == pBoatId ||currentId%10 == pBoatId%10){//if same Id, or id that ends wit the same digit
                     moves.add(processRecord(currentRecord));
-                    System.out.println(moves.get(moves.size()-1).toString());
                 }
                 amountToRead--;
             }
@@ -127,6 +125,9 @@ public class TextManager {
             else{//same action, we have to merge it
                 degree2 = (degree1 + pList.get(currentIndex).getDegree())%degree1;//acumulator of degrees
                 value2 = (pList.get(currentIndex).getValue() + value1)/2;//acumulator of values
+                if (degree2 == 0){
+                    degree2 = 0.1;
+                }
                 value1 =  value2;
                 degree1 = degree2;
             }
@@ -152,6 +153,7 @@ public class TextManager {
             pRecord =  pRecord.substring(cutString, pRecord.length());
             records.add(currentAttribute);
         }
+        //aclaracion de codigo
         return new Move(Double.parseDouble(records.get(0)),Integer.parseInt(records.get(1)),
                         records.get(2),Double.parseDouble(records.get(3)));
     }

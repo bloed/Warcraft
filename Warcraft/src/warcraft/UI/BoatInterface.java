@@ -33,7 +33,7 @@ public class BoatInterface {
     
     public BoatInterface(JLabel pLabel, OceanInterface pOcean, Point pCoordenates){
         _CurrentAngle = 0;
-        _CurrentLife = "boat_secondhit.png";
+        _CurrentLife = "boat.png";
         _MainLabel = pLabel;
         _Label = new JLabel();
         _Label.setSize(40, 100);
@@ -110,11 +110,10 @@ public class BoatInterface {
                 _Label.setLocation(_Label.getLocation().x-1, _Label.getLocation().y); //invertd logic
                 pPixels-=1;
             }
-            
-        }
-        
+        }        
     }
     public void shoot(double pTime){
+        //hay que verificar que no se salga del cuadrado
         JLabel shoot = new JLabel();
         shoot.setIcon(new ImageIcon(createTransformedImage(_CurrentAngle, "torpedo.png",shoot)));
         _MainLabel.add(shoot);
@@ -142,8 +141,7 @@ public class BoatInterface {
                 currentSen += 1;
                 shoot.setLocation(shoot.getLocation().x-1, shoot.getLocation().y); //invertd logic
                 pTime-=1;
-            }
-            
+            }   
         }
     }
     
