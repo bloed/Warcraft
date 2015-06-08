@@ -28,16 +28,16 @@ public class TextManager {
         PrintWriter writer  = createFile(Constants.FILENAME);
         if(writer!=null){
             for(int counter = 0; counter < Constants.AMOUNT_OF_REGISTERS ; counter++){
-                double degree = (double)Utility.generateRand(10, 100)/100;
-                Integer id = Utility.generateRand(100, 1000);
-                Integer intAction = Utility.generateRand(0, 2);
+                double degree = (double)Utility.generateRand(Constants.MIN_DEGREE, Constants.MAX_DEGREE)/100;//we need fractions
+                Integer id = Utility.generateRand(Constants.MIN_ID, Constants.MAX_ID);
+                Integer intAction = Utility.generateRand(0, _Moves.length);
                 String stringAction = _Moves[intAction];
                 Double value;
                 if(intAction == 0){//advance
-                    value = (double)Utility.generateRand(10, 201);
+                    value = (double)Utility.generateRand(Constants.MIN_VALUE_PIXELS, Constants.MAX_VALUE_PIXELS);
                 }
                 else{//shoot
-                    value = (double)Utility.generateRand(8, 42)/10;
+                    value = (double)Utility.generateRand(Constants.MIN_VALUE_TIME, Constants.MAX_VALUE_TIME)/10;//we need fractions
                 }
                 String record = degree + "|" + id + "|" + stringAction + "|" + value;
                 addRecord(writer , record);        
@@ -87,8 +87,8 @@ public class TextManager {
         if(scanner != null){
             Integer amountToIgnore = pStart;
             while(amountToIgnore != 0){
-                scanner.next();
-                amountToIgnore--;
+                scanner.next();//just are read but not processed
+                amountToIgnore--;//until we reach pStart
             }
             Integer amountToRead =pFinal - pStart;
             while(amountToRead != 0){
@@ -112,7 +112,6 @@ public class TextManager {
         Double degree2 = degree1;//in case there is only one action
         Double value2 = value1;
         for(int currentIndex = pStart + 1 ; currentIndex < pFinal; currentIndex++){
-            String caca = pList.get(currentIndex).getAction();
             if(!pList.get(currentIndex).getAction().equals(currentAction)){
                 degree1 = pList.get(currentIndex).getDegree();
                 value1 = pList.get(currentIndex).getValue();
@@ -153,16 +152,18 @@ public class TextManager {
             pRecord =  pRecord.substring(cutString, pRecord.length());
             records.add(currentAttribute);
         }
-        //aclaracion de codigo
-        return new Move(Double.parseDouble(records.get(0)),Integer.parseInt(records.get(1)),
-                        records.get(2),Double.parseDouble(records.get(3)));
+        Double degree = Double.parseDouble(records.get(0));
+        Integer id = Integer.parseInt(records.get(1));
+        String action = records.get(2);
+        Double value = Double.parseDouble(records.get(3));
+        return new Move(degree, id, action, value);
     }
-    
     private Integer getRecordId(String pRecord){
+        //reveices a string of the form degree|id|action|value
         Integer delimeter = pRecord.indexOf("|");
-        pRecord = pRecord.substring(delimeter+1, pRecord.length());
+        pRecord = pRecord.substring(delimeter+1, pRecord.length());//we cut it to reach the id
         delimeter = pRecord.indexOf("|");
-        String id = pRecord.substring(0, delimeter);
+        String id = pRecord.substring(0, delimeter);//we cut it to reach the id
         return Integer.parseInt(id);
     }
     private String invertAction(String pAction){
@@ -174,12 +175,3 @@ public class TextManager {
         }
     }
 }
-/*Scanner scanner = openFile(Constants.FILENAME);
-        if(scanner != null){
-            while(scanner.hasNext()){
-                JOptionPane.showMessageDialog(null, scanner.next());
-            }
-        }
-        scanner.close();
-//System.out.println(Runtime.getRuntime().availableProcessors());
-*/
