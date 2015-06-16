@@ -12,9 +12,13 @@ import java.util.logging.Logger;
 public class TextManager {
     private static TextManager _Instance = null;
     private final String _Moves[];
+    private SelectMovesThread[] _SelectThreads;//threads that will select the moves for a boat
+    private MergeMovesThread[] _MergeThreads;//theads that will merge the moves of a boat
     
     private TextManager(){
         _Moves = new String[] {"avanzar","disparar"};
+        _SelectThreads = new SelectMovesThread[Runtime.getRuntime().availableProcessors()];//depending of the amount of procesor
+        _MergeThreads = new MergeMovesThread[Runtime.getRuntime().availableProcessors()];
     }
     
     public static TextManager getInstance(){
@@ -23,6 +27,7 @@ public class TextManager {
         }
         return _Instance;
     }
+    
     public void generateTXTStrategy(){
         //creates the txt with the 200 000 registers of possible moves
         PrintWriter writer  = createFile(Constants.FILENAME);
@@ -46,6 +51,7 @@ public class TextManager {
             System.out.println("Moves.txt is finished!");
         }
     }
+    
     private PrintWriter createFile(String pFileName){
         PrintWriter writer = null;
         try {
@@ -55,13 +61,16 @@ public class TextManager {
         }
         return writer;
     }
+    
     private void addRecord(PrintWriter pWriter, String pRecord){
         pWriter.println(pRecord);
     }
+    
     private void closeFile(PrintWriter pWriter){
         pWriter.close();
     }
-    private Scanner openFile(String pFileName){
+    
+    public static Scanner openFile(String pFileName){
         try{
             Scanner scanner = new Scanner(new File(pFileName));
             return scanner;
@@ -71,107 +80,71 @@ public class TextManager {
             return null;
         }
     }
-    public ArrayList<Move> mainSelectMovesForBoat(Integer pBoatId){
+    
+    private ArrayList<Move> mainSelectMovesForBoat(Integer pBoatId, Integer pAmountProcesors, Integer pRecordsPerProcesor){
         //divides the 200000 records and send them to execute in parallel
+        initializeSelectThreads(pAmountProcesors, pRecordsPerProcesor, pBoatId);
+        Utility.waitForAllThreads();//waits for all selection to finish
+        ArrayList<Move> allSelectedMoves = joinAnswerSelectThreads(pAmountProcesors);
+        /*for (int i = 0; i < allSelectedMoves.size() ; i++){
+            System.out.println(allSelectedMoves.get(i).toString());
+        }*/
+        Integer movesPerMergeThread = allSelectedMoves.size() / pAmountProcesors;
+        initializeMergeThreads(pAmountProcesors, movesPerMergeThread, allSelectedMoves);
+        Utility.waitForAllThreads();//waits for all merge threads to finish
+        ArrayList<Move> finalResult = joinAnswerMergeThreads(pAmountProcesors);
+        /*for (int i = 0; i < finalResult.size() ; i++){
+            System.out.println(finalResult.get(i).toString());
+        }*/
+        System.out.println("Se termino de generar para el barco con id de " + pBoatId + " con : " + finalResult.size() + " de movimientos diferentes.");
+        return finalResult;
+    }
+    
+    private void initializeSelectThreads(Integer pAmountOfThreads, Integer amountRegistersPerThread, Integer pBoatId){
+        Integer start = 0;
+        Integer Final = amountRegistersPerThread;
+        for(int threadNumber = 0 ; threadNumber < pAmountOfThreads ; threadNumber++){
+            _SelectThreads[threadNumber] =  new SelectMovesThread(start,Final,pBoatId);
+            start = Final;//so new ranges are set up for the following thread
+            Final += amountRegistersPerThread;
+            this._SelectThreads[threadNumber].start();
+        }
+    }
+    
+    private void initializeMergeThreads(Integer pAmountOfThreads,Integer amountRegistersPerThread, ArrayList<Move> pList){
+        Integer start = 0;
+        Integer Final = amountRegistersPerThread;
+        for(int threadNumber = 0 ; threadNumber < pAmountOfThreads ; threadNumber++){
+            _MergeThreads[threadNumber] =  new MergeMovesThread(start, Final, pList);
+            start = Final;//so new ranges are set up for the following thread
+            Final += amountRegistersPerThread;
+            _MergeThreads[threadNumber].start();
+        }
+    }
+    
+    private ArrayList<Move> joinAnswerSelectThreads(Integer pAmountOfThreads){
+        ArrayList<Move>  result = new ArrayList();
+        for(int threadNumber = 0 ; threadNumber < pAmountOfThreads ; threadNumber++){
+            result.addAll(_SelectThreads[threadNumber].getProcessedMoves());
+        }
+        return result;
+    }
+    private ArrayList<Move> joinAnswerMergeThreads(Integer pAmountOfThreads){
+        ArrayList<Move>  result = new ArrayList();
+        for(int threadNumber = 0 ; threadNumber < pAmountOfThreads ; threadNumber++){
+            result.addAll(_MergeThreads[threadNumber].getProcessedMoves());
+        }
+        return result;
+    }
+    
+    public void mainStrategy(){
         Integer amountOfProcessors = Runtime.getRuntime().availableProcessors();
         Integer amountOfRecordsPerProcessor = Constants.AMOUNT_OF_REGISTERS / amountOfProcessors;
         System.out.println(amountOfRecordsPerProcessor);
-        return null;
-    }
-    public ArrayList<Move> selectMovesForBoat(Integer pBoatId, Integer pStart, Integer pFinal){
-        //both pStart is inclusive and pFinal is exlusive. This runs in parallel.
-        Scanner scanner = openFile(Constants.FILENAME);
-        String currentRecord;
-        Integer currentId;
-        ArrayList<Move> moves = new ArrayList();  
-        if(scanner != null){
-            Integer amountToIgnore = pStart;
-            while(amountToIgnore != 0){
-                scanner.next();//just are read but not processed
-                amountToIgnore--;//until we reach pStart
-            }
-            Integer amountToRead =pFinal - pStart;
-            while(amountToRead != 0){
-                currentRecord = scanner.next();
-                currentId = getRecordId(currentRecord);
-                if(currentId == pBoatId ||currentId%10 == pBoatId%10){//if same Id, or id that ends wit the same digit
-                    moves.add(processRecord(currentRecord));
-                }
-                amountToRead--;
-            }
-            scanner.close();
-        }
-        return moves;
-    }
-    public ArrayList<Move> mergeMovesForBoat(ArrayList<Move> pList, Integer pStart, Integer pFinal){
-        //both pStart is inclusive and pFinal is exlusive. This runs in parallel.
-        ArrayList<Move> newMoves = new ArrayList();  
-        String currentAction = pList.get(0).getAction();
-        Double degree1 = pList.get(0).getDegree();
-        Double value1 = pList.get(0).getValue();
-        Double degree2 = degree1;//in case there is only one action
-        Double value2 = value1;
-        for(int currentIndex = pStart + 1 ; currentIndex < pFinal; currentIndex++){
-            if(!pList.get(currentIndex).getAction().equals(currentAction)){
-                degree1 = pList.get(currentIndex).getDegree();
-                value1 = pList.get(currentIndex).getValue();
-                newMoves.add(new Move(degree2,0,currentAction,value2));
-                System.out.println(degree2+"|"+"0"+"|"+currentAction+"|"+value2);
-                currentAction = invertAction(currentAction);
-                degree2 = degree1;//in case there is only one action
-                value2 = value1;
-            }
-            else{//same action, we have to merge it
-                degree2 = (degree1 + pList.get(currentIndex).getDegree())%degree1;//acumulator of degrees
-                value2 = (pList.get(currentIndex).getValue() + value1)/2;//acumulator of values
-                if (degree2 == 0){
-                    degree2 = 0.1;
-                }
-                value1 =  value2;
-                degree1 = degree2;
-            }
-        }
-        newMoves.add(new Move(degree2,0,currentAction,value2));
-        System.out.println(degree2+"|"+"0"+"|"+currentAction+"|"+value2);
-        return newMoves;
-    }
-    private Move processRecord(String pRecord){
-        //receives a record of the form : degree|id|action|value
-        ArrayList<String> records = new ArrayList();//[0] = degree , [1] = id, [2] = action, [3] = value
-        Integer delimeter;
-        String currentAttribute;
-        Integer cutString;//used to know where tu cut the string
-        while(!pRecord.isEmpty()){
-            delimeter = pRecord.indexOf("|");
-            cutString = delimeter + 1;
-            if (delimeter == -1){
-                delimeter = pRecord.length();//when reading valule
-                cutString = pRecord.length();
-            }
-            currentAttribute = pRecord.substring(0, delimeter);
-            pRecord =  pRecord.substring(cutString, pRecord.length());
-            records.add(currentAttribute);
-        }
-        Double degree = Double.parseDouble(records.get(0));
-        Integer id = Integer.parseInt(records.get(1));
-        String action = records.get(2);
-        Double value = Double.parseDouble(records.get(3));
-        return new Move(degree, id, action, value);
-    }
-    private Integer getRecordId(String pRecord){
-        //reveices a string of the form degree|id|action|value
-        Integer delimeter = pRecord.indexOf("|");
-        pRecord = pRecord.substring(delimeter+1, pRecord.length());//we cut it to reach the id
-        delimeter = pRecord.indexOf("|");
-        String id = pRecord.substring(0, delimeter);//we cut it to reach the id
-        return Integer.parseInt(id);
-    }
-    private String invertAction(String pAction){
-        if (pAction.equals("avanzar")){
-            return "disparar";
-        }
-        else{
-            return "avanzar";
+        Integer[] boatsId = Utility.generateBoatsId(amountOfProcessors);
+        for(int boatNumber = 0; boatNumber < amountOfProcessors; boatNumber++){
+            //generates the strategy for all boats
+            mainSelectMovesForBoat(boatsId[boatNumber], amountOfProcessors, amountOfRecordsPerProcessor);
         }
     }
 }

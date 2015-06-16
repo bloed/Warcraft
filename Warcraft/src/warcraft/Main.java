@@ -14,10 +14,7 @@ public class Main {
         System.out.println(Runtime.getRuntime().availableProcessors());
         TextManager textManager = TextManager.getInstance();
         //textManager.generateTXTStrategy();
-        ArrayList<Move> test = textManager.selectMovesForBoat(113,185000,186000);
-        System.out.println("---------------------------------------");
-        textManager.mergeMovesForBoat(test, 0, test.size());
-        System.out.println("==========================================");
+        textManager.mainStrategy();
     }
     
 }
