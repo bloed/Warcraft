@@ -1,20 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package warcraft.logic;
+﻿package warcraft.logic;
 
 import java.awt.Point;
 import java.util.ArrayList;
 import warcraft.UI.BoatInterface;
 import warcraft.UI.OceanInterface;
 
+<<<<<<< HEAD
 /**
  *
  * @author Josué
  */
 public class Boat extends Thread {
+
     private ArrayList<Move> _Moves;
     private Integer _CurrentMove;
     private BoatInterface _UIActions;
