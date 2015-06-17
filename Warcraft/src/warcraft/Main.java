@@ -1,5 +1,6 @@
 package warcraft;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import warcraft.UI.MainMenu;
 import warcraft.logic.Game;
@@ -28,10 +29,8 @@ public class Main {
         //Game game = Game.getInstance();*/
         //game.setBoats(threadManager.mainStrategy());
         //game now contains a list of all the boatszz
-        SecurityManager securityManager = SecurityManager.getInstance();
+        //SecurityManager securityManager = SecurityManager.getInstance();
         //SecurityManager caca = new SecurityManager();
-        securityManager.generateKeys(1235);
-        String caca = "caca";
-
+        //securityManager.mainAsymetricEncryption("caca");
     }
 }

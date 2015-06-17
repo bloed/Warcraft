@@ -2,6 +2,7 @@ package warcraft.logic;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -26,7 +27,7 @@ public class TextManager {
     }    
     public void generateTXTStrategy(){
         //creates the txt with the 200 000 registers of possible moves
-        PrintWriter writer  = createFile(Constants.FILENAME);
+        PrintWriter writer  = openWriteFile(Constants.FILENAME);
         if(writer!=null){
             for(int counter = 0; counter < Constants.AMOUNT_OF_REGISTERS ; counter++){
                 double degree = (double)Utility.generateRand(Constants.MIN_DEGREE, Constants.MAX_DEGREE)/100;//we need fractions
@@ -47,22 +48,23 @@ public class TextManager {
             JOptionPane.showMessageDialog(null,"Moves.txt is finished!");
         }
     } 
-    private PrintWriter createFile(String pFileName){
+    public static PrintWriter openWriteFile(String pFileName){
+        //it replaces if there already exists a file with that name
         PrintWriter writer = null;
         try {
-            writer = new PrintWriter(pFileName);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(TextManager.class.getName()).log(Level.SEVERE, null, ex);
+            writer = new PrintWriter(new FileWriter(pFileName, true)); 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         return writer;
     }
-    private void addRecord(PrintWriter pWriter, String pRecord){
+    public static void addRecord(PrintWriter pWriter, String pRecord){
         pWriter.println(pRecord);
     }
-    private void closeFile(PrintWriter pWriter){
+    public static void closeFile(PrintWriter pWriter){
         pWriter.close();
     } 
-    public static Scanner openFile(String pFileName){
+    public static Scanner openReadFile(String pFileName){
         try{
             Scanner scanner = new Scanner(new File(pFileName));
             return scanner;

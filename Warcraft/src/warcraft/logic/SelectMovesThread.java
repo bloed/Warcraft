@@ -20,7 +20,7 @@ public class SelectMovesThread extends Thread{
     @Override
     public void run(){
         //both pStart is inclusive and pFinal is exlusive. This runs in parallel.
-        Scanner scanner = TextManager.openFile(Constants.FILENAME);
+        Scanner scanner = TextManager.openReadFile(Constants.FILENAME);
         String currentRecord;
         Integer currentId; 
         if(scanner != null){
