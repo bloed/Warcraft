@@ -23,27 +23,31 @@ import javax.swing.JLabel;
  *
  * @author Xelop
  */
-public class BoatInterface {
+public class BoatInterface  {
     String _CurrentLife;
     Point _Coordenates;
     JLabel _Label;
-    JLabel _MainLabel;
     double _CurrentAngle; //0: initial position, vertical boat. Values change + or - from there by decimals EX: <-- -0.1/0.1 --->
     OceanInterface _Screen;
+    Thread _MainThread;
     
-    public BoatInterface(JLabel pLabel, OceanInterface pOcean, Point pCoordenates){
+    
+    public BoatInterface(OceanInterface pOcean, Point pCoordenates, Thread pThread){
         _CurrentAngle = 0;
         _CurrentLife = "boat.png";
-        _MainLabel = pLabel;
         _Label = new JLabel();
         _Label.setSize(40, 100);
         _Screen = pOcean;
+        _MainThread = pThread;
+        
         ImageIcon newImage = new ImageIcon(createTransformedImage(_CurrentAngle, _CurrentLife,_Label));
         _Label.setIcon(newImage);
-        _MainLabel.add(_Label);
+        _Screen.getBackgroundLBL().add(_Label);
         _Label.setLocation(pCoordenates);
-        rotateBoat(5);
-        shoot(400);
+        //moveBoat(500);
+        rotateBoat(6.28);
+        moveBoat(1000);
+        
         
     }
     public BufferedImage createTransformedImage(double pAngle, String pFile, JLabel pLabel) { //radians
@@ -75,15 +79,19 @@ public class BoatInterface {
     }
     public void rotateBoat(double pAngle){
         while(_CurrentAngle<pAngle){
-            pAngle-=0.1;
+            pAngle-=0.01;
             if(pAngle<0)
-                _CurrentAngle += pAngle +0.1; //0.1 alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                _CurrentAngle += pAngle +0.01; //0.1 alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             else
-                _CurrentAngle+=0.1;
+                _CurrentAngle+=0.01;
             
             ImageIcon newImage = new ImageIcon(createTransformedImage(_CurrentAngle,_CurrentLife,_Label));
             _Label.setIcon(newImage);
-            //falta algun tipo de stop
+            try {
+                _MainThread.sleep(50); ////////////////alambrado!!!
+            } catch (InterruptedException ex) {
+                Logger.getLogger(BoatInterface.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     public void moveBoat(int pPixels){
@@ -94,21 +102,31 @@ public class BoatInterface {
             currentSen += Math.sin(_CurrentAngle);
             if(currentCos >= 1){
                 currentCos-=1;
-                _Label.setLocation(_Label.getLocation().x, _Label.getLocation().y-1); //invertd logic
-                pPixels-=1;
+                if(_Label.getLocation().y-1>0){
+                    _Label.setLocation(_Label.getLocation().x, _Label.getLocation().y-1); //invertd logic
+                }
+                    pPixels-=1;
             }else if(currentCos <= -1){
                 currentCos+=1;
-                _Label.setLocation(_Label.getLocation().x, _Label.getLocation().y+1); //invertd logic
+                if(_Label.getLocation().y+_Label.getSize().height < 650) //alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    _Label.setLocation(_Label.getLocation().x, _Label.getLocation().y+1); //invertd logic
                 pPixels-=1;
             }
             if(currentSen >= 1){
                 currentSen -= 1;
-                _Label.setLocation(_Label.getLocation().x+1, _Label.getLocation().y); //invertd logic
+                if(_Label.getLocation().x+_Label.getSize().width < 900)    //alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    _Label.setLocation(_Label.getLocation().x+1, _Label.getLocation().y); //invertd logic
                 pPixels-=1;
             }else if(currentSen <= -1){
                 currentSen += 1;
-                _Label.setLocation(_Label.getLocation().x-1, _Label.getLocation().y); //invertd logic
+                if(_Label.getLocation().x-1 > 0)
+                    _Label.setLocation(_Label.getLocation().x-1, _Label.getLocation().y); //invertd logic
                 pPixels-=1;
+            }
+            try {
+                _MainThread.sleep(50);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(BoatInterface.class.getName()).log(Level.SEVERE, null, ex);
             }
         }        
     }
@@ -116,8 +134,8 @@ public class BoatInterface {
         //hay que verificar que no se salga del cuadrado
         JLabel shoot = new JLabel();
         shoot.setIcon(new ImageIcon(createTransformedImage(_CurrentAngle, "torpedo.png",shoot)));
-        _MainLabel.add(shoot);
-        shoot.setLocation(_Label.getLocation());
+        _Screen.getBackgroundLBL().add(shoot);
+        shoot.setLocation(new Point(_Label.getSize().width/2+_Label.getLocation().x,_Label.getSize().height/2+_Label.getLocation().y));
         
         double currentCos = 0;
         double currentSen = 0;
@@ -141,8 +159,16 @@ public class BoatInterface {
                 currentSen += 1;
                 shoot.setLocation(shoot.getLocation().x-1, shoot.getLocation().y); //invertd logic
                 pTime-=1;
-            }   
+            }
+            try {
+                _MainThread.sleep(50);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(BoatInterface.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+        _Screen.getBackgroundLBL().remove(shoot);
+        _Screen.getBackgroundLBL().validate();
+        _Screen.getBackgroundLBL().repaint();
     }
     
     

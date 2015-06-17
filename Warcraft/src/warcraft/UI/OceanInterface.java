@@ -24,7 +24,8 @@ public class OceanInterface extends javax.swing.JFrame {
         this.setLocation(dim.width/4-this.getSize().width/4, dim.height/4-this.getSize().height/4); 
         
         initComponents();
-        new BoatInterface(_lbl_BackGround, this, new Point(200,200));
+        x x=new x(this);
+        x.start();
     }
 
     /**
@@ -56,6 +57,9 @@ public class OceanInterface extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public JLabel getBackgroundLBL(){
+        return _lbl_BackGround;
+    }
     /**
      * @param args the command line arguments
      */
