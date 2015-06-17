@@ -45,8 +45,8 @@ public class BoatInterface  {
         _Screen.getBackgroundLBL().add(_Label);
         _Label.setLocation(pCoordenates);
         //moveBoat(500);
-        rotateBoat(6.28);
-        moveBoat(1000);
+        //rotateBoat(6.28);
+        //moveBoat(1000);
         
         
     }

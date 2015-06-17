@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
 import javax.swing.JLabel;
+import warcraft.logic.Game;
 
 /**
  *
@@ -19,13 +20,16 @@ public class OceanInterface extends javax.swing.JFrame {
     /**
      * Creates new form OceanInterface
      */
-    public OceanInterface() {
+    Game _game;
+    
+    public OceanInterface(Game pGame) {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize(); //two lines of code for it to start centered
         this.setLocation(dim.width/4-this.getSize().width/4, dim.height/4-this.getSize().height/4); 
+        _game = pGame;
         
         initComponents();
-        x x=new x(this);
-        x.start();
+        _game.setOceans(this);
+        _game.startThreads();
     }
 
     /**
@@ -90,7 +94,7 @@ public class OceanInterface extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new OceanInterface().setVisible(true);
+                //new OceanInterface().setVisible(true);
             }
         });
     }

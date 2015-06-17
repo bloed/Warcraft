@@ -5,15 +5,20 @@
  */
 package warcraft.logic;
 
+import java.awt.Point;
 import java.util.ArrayList;
+import warcraft.UI.BoatInterface;
+import warcraft.UI.OceanInterface;
 
 /**
  *
  * @author Josué
  */
-public class Boat {
+public class Boat extends Thread {
     private ArrayList<Move> _Moves;
     private Integer _CurrentMove;
+    private BoatInterface _UIActions;
+    private Point _Coordenates;
     
     public Boat(ArrayList<Move> pList){
         _Moves = pList;
@@ -30,4 +35,15 @@ public class Boat {
         }
         return result;
     }
+    public void run(){
+        _UIActions.moveBoat(400);
+    }
+    public void setOnOcean(OceanInterface pOcean){
+        int x = Utility.generateRand(0, 900);
+        int y = Utility.generateRand(0, 550);
+        _Coordenates = new Point(x,y);
+        _UIActions = new BoatInterface(pOcean, _Coordenates,this);
+        
+    }
+    
 }

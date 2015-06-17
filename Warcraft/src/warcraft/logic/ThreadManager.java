@@ -92,13 +92,14 @@ public class ThreadManager {
             //generates the strategy for all boats
             boatList[boatNumber] =
             mainSelectMovesForBoat(boatsId[boatNumber], amountOfProcessors, amountOfRecordsPerProcessor);
+            
         }
         return boatList;
     }
     private void waitForAllThreads(){
         //wats for all secundary threads to finish
         Integer sumator = 0;
-        while(Thread.activeCount() != 1){//we will wait until all threads finish
+        while(Thread.activeCount() != 2){//we will wait until all threads finish
             //System.out.println("Number of threads running " + Thread.activeCount());
             sumator++;
         }

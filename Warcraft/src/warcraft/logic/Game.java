@@ -5,6 +5,8 @@
  */
 package warcraft.logic;
 
+import warcraft.UI.OceanInterface;
+
 /**
  *
  * @author Josué
@@ -26,5 +28,16 @@ public class Game {
         _BoatsArray = pArray;
         System.out.println(_BoatsArray.length + " boats were added");
     }
+    public void setOceans(OceanInterface pOcean){
+        for(int index = 0; index< _BoatsArray.length; index++){
+            _BoatsArray[index].setOnOcean(pOcean);
+        }
+    }
+    public void startThreads(){
+        for(int index = 0; index< _BoatsArray.length; index++){
+            _BoatsArray[index].start();
+        }
+    }
+    
     
 }

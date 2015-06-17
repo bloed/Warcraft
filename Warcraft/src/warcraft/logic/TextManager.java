@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 
 public class TextManager {
@@ -43,7 +44,7 @@ public class TextManager {
                 addRecord(writer , record);        
             }
             closeFile(writer);
-            System.out.println("Moves.txt is finished!");
+            JOptionPane.showMessageDialog(null,"Moves.txt is finished!");
         }
     } 
     private PrintWriter createFile(String pFileName){
