@@ -31,6 +31,7 @@ public class Main {
         SecurityManager securityManager = SecurityManager.getInstance();
         //SecurityManager caca = new SecurityManager();
         securityManager.generateKeys(1235);
+        String caca = "caca";
 
     }
 }

@@ -22,5 +22,8 @@ public class Utility {
             boatsId[arrayIndex] = randomBoatId;
         }
         return boatsId;
-    } 
+    }
+    public static void showBytes(byte [] buffer) {
+        System.out.write(buffer, 0, buffer.length);
+    }
 }

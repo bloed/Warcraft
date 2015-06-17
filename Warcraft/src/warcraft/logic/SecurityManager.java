@@ -24,6 +24,7 @@ import javax.crypto.Cipher;
 public class SecurityManager {
     private static SecurityManager _Instance = null;
     private Cipher _Cipher;
+    
     public SecurityManager(){
         try{
             _Cipher = Cipher.getInstance("RSA");
@@ -68,6 +69,9 @@ public class SecurityManager {
             RSAPublicKey clavePublicaRSA = (RSAPublicKey) publicKey;
             System.out.println("exponente cifrado: " + clavePublicaRSA.getPublicExponent().toString() );
             System.out.println("modulo: " + clavePublicaRSA.getModulus().toString() );
+            
+            byte[] cipherData = encrypt(publicKey , "asdfasdf");
+            deEncrypt(privateKey, cipherData);
         }
         catch(Exception e){
             System.out.println(e.getMessage());
@@ -88,9 +92,41 @@ public class SecurityManager {
         }
     }
     
-    public void encrypt(Key pPublicKey, String pString){
-        
+    public byte[] encrypt(Key pKey, String pString){
+        try{
+            byte[] dataBytes = pString.getBytes();
+            //byte[] b = string.getBytes(Charset.forName("UTF-8"));
+            _Cipher.init(Cipher.ENCRYPT_MODE, pKey);  // Cifra con la clave publica
+            System.out.println("3a. Cifrar con clave publica");
+            byte[] cipherData = _Cipher.doFinal(dataBytes);
+            System.out.println("TEXTO CIFRADO");
+            Utility.showBytes(cipherData);
+            System.out.println("\n-------------------------------");
+            return cipherData;
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
+    
+    public String deEncrypt(Key pKey, byte[] cipherData){
+        try{
+            _Cipher.init(Cipher.DECRYPT_MODE, pKey); // Descrifra con la clave privad
+            System.out.println("3b. Descifrar con clave privada");
+            byte[] deEncryptData = _Cipher.doFinal(cipherData);
+            System.out.println("TEXTO DESCIFRADO");
+            Utility.showBytes(deEncryptData);
+            System.out.println("\n-------------------------------");
+            return null;
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
+    
 
 }
  

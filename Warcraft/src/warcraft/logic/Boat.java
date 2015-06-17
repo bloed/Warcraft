@@ -1,11 +1,13 @@
-﻿package warcraft.logic;
+package warcraft.logic;
+
+
 
 import java.awt.Point;
 import java.util.ArrayList;
 import warcraft.UI.BoatInterface;
 import warcraft.UI.OceanInterface;
 
-<<<<<<< HEAD
+
 /**
  *
  * @author Josué
