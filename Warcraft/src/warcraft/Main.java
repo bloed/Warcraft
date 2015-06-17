@@ -6,6 +6,7 @@ import warcraft.logic.Move;
 import warcraft.logic.TextManager;
 import warcraft.logic.ThreadManager;
 import warcraft.logic.Utility;
+import warcraft.logic.SecurityManager;
 
 public class Main {
 
@@ -17,8 +18,11 @@ public class Main {
         TextManager textManager = TextManager.getInstance();
         //textManager.generateTXTStrategy();
         ThreadManager threadManager = ThreadManager.getInstance();
-        Game game = Game.getInstance();
-        game.setBoats(threadManager.mainStrategy());
-        //game now contains a list of all the boats
+        //Game game = Game.getInstance();
+        //game.setBoats(threadManager.mainStrategy());
+        //game now contains a list of all the boatszz
+        SecurityManager securityManager = SecurityManager.getInstance();
+        //SecurityManager caca = new SecurityManager();
+        securityManager.generateKeys(1235);
     }
 }

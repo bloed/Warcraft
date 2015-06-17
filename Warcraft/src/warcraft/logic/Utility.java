@@ -3,7 +3,6 @@ import java.util.Random;
 
 
 public class Utility {
-
     public static Integer generateRand(int pMinRange, int pMaxRange){
         //inclusive for minRange, exclusive for maxRange
         Random generator = new Random();
@@ -14,8 +13,7 @@ public class Utility {
             System.out.println(e.getMessage());
             return 0;
         }
-    }
-    
+    }    
     public static Integer[] generateBoatsId (Integer pAmountOfBoats){
         Integer[] boatsId = new Integer[pAmountOfBoats];
         Integer randomBoatId;
@@ -24,7 +22,5 @@ public class Utility {
             boatsId[arrayIndex] = randomBoatId;
         }
         return boatsId;
-    }
-    
-    
+    } 
 }
