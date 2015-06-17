@@ -1,8 +1,10 @@
 package warcraft;
 
 import java.util.ArrayList;
+import warcraft.logic.Game;
 import warcraft.logic.Move;
 import warcraft.logic.TextManager;
+import warcraft.logic.ThreadManager;
 import warcraft.logic.Utility;
 
 public class Main {
@@ -14,7 +16,9 @@ public class Main {
         System.out.println(Runtime.getRuntime().availableProcessors());
         TextManager textManager = TextManager.getInstance();
         //textManager.generateTXTStrategy();
-        textManager.mainStrategy();
+        ThreadManager threadManager = ThreadManager.getInstance();
+        Game game = Game.getInstance();
+        game.setBoats(threadManager.mainStrategy());
+        //game now contains a list of all the boats
     }
-    
 }

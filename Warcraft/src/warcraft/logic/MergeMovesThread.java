@@ -26,7 +26,7 @@ public class MergeMovesThread extends Thread{
     }
     
     @Override
-    public void run(){
+    public void run(){//DAR LA VUELTA
         //both pStart is inclusive and pFinal is exlusive. This runs in parallel. 
         String currentAction = _MovesToMerge.get(0).getAction();
         Double degree1 = _MovesToMerge.get(0).getDegree();
@@ -44,11 +44,8 @@ public class MergeMovesThread extends Thread{
                 value2 = value1;
             }
             else{//same action, we have to merge it
-                degree2 = (degree1 + _MovesToMerge.get(currentIndex).getDegree())%degree1;//acumulator of degrees
+                degree2 = (degree1 + _MovesToMerge.get(currentIndex).getDegree())%_MovesToMerge.get(currentIndex).getDegree();//acumulator of degrees
                 value2 = (_MovesToMerge.get(currentIndex).getValue() + value1)/2;//acumulator of values
-                if (degree2 == 0){//simple solution
-                    degree2 = 0.1;
-                }
                 value1 =  value2;
                 degree1 = degree2;
             }

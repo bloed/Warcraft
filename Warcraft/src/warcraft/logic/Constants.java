@@ -11,6 +11,5 @@ public class Constants {
     public static final Integer MIN_VALUE_TIME = 8;
     public static final Integer MAX_VALUE_TIME = 42;
     public static final Integer MIN_VALUE_PIXELS = 10;
-    public static final Integer MAX_VALUE_PIXELS = 201;
-    
+    public static final Integer MAX_VALUE_PIXELS = 201;    
 }

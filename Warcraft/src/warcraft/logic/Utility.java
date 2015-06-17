@@ -26,11 +26,5 @@ public class Utility {
         return boatsId;
     }
     
-    public static void waitForAllThreads(){
-        //wats for all secundary threads to finish
-        while(Thread.activeCount() != 1){//we will wait until all threads finish
-            //System.out.println("Number of threads running " + Thread.activeCount());
-            Integer caca = 0;
-        }
-    }
+    
 }
