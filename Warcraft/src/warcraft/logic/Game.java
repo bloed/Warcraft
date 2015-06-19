@@ -26,13 +26,16 @@ public class Game {
     }
     public void setOceans(OceanInterface pOcean){
         for(int index = 0; index< _BoatsArray.length; index++){
-            _BoatsArray[index].setOnOcean(pOcean);
+            _BoatsArray[index].setOnOcean(pOcean,this);
         }
     }
     public void startThreads(){
         for(int index = 0; index< _BoatsArray.length; index++){
             _BoatsArray[index].start();
         }
+    }
+    public Boat[] getBoats(){
+        return _BoatsArray;
     }
     
     

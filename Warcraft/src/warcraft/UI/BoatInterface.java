@@ -18,32 +18,40 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import warcraft.logic.Game;
+import warcraft.logic.Utility;
 
 /**
  *
  * @author Xelop
  */
 public class BoatInterface  {
-    String _CurrentLife;
-    Point _Coordenates;
-    JLabel _Label;
-    double _CurrentAngle; //0: initial position, vertical boat. Values change + or - from there by decimals EX: <-- -0.1/0.1 --->
-    OceanInterface _Screen;
-    Thread _MainThread;
+    private String _CurrentLife;
+    private int _LifePoints;
+    private Point _Coordenates;
+    private JLabel _Label;
+    private double _CurrentAngle; //0: initial position, vertical boat. Values change + or - from there by decimals EX: <-- -0.1/0.1 --->
+    private OceanInterface _Screen;
+    private Thread _MainThread;
+    private Game _Game;
+    private int _X, _Y, _Width, _Heigth;
     
     
-    public BoatInterface(OceanInterface pOcean, Point pCoordenates, Thread pThread){
+    public BoatInterface(OceanInterface pOcean, Point pCoordenates, Thread pThread, Game pGame){
         _CurrentAngle = 0;
         _CurrentLife = "boat.png";
         _Label = new JLabel();
         _Label.setSize(40, 100);
         _Screen = pOcean;
         _MainThread = pThread;
+        _Game = pGame;
+        _LifePoints = 3;
         
         ImageIcon newImage = new ImageIcon(createTransformedImage(_CurrentAngle, _CurrentLife,_Label));
         _Label.setIcon(newImage);
         _Screen.getBackgroundLBL().add(_Label);
         _Label.setLocation(pCoordenates);
+        restoreValues();
         //moveBoat(500);
         //rotateBoat(6.28);
         //moveBoat(1000);
@@ -62,6 +70,8 @@ public class BoatInterface  {
             int newWidth = (int) Math.floor(width * cos + heigth * sin); //new value from the moved positions of th angle
             int newHeigth = (int) Math.floor(heigth * cos + width * sin);
             pLabel.setSize(newWidth, newHeigth);
+            _Width = newWidth;
+            _Heigth = newHeigth;
             
             BufferedImage result = new BufferedImage(newWidth, newHeigth, Transparency.TRANSLUCENT); //creates the new image space
             Graphics2D g2d = result.createGraphics(); //gets graphics of the image space
@@ -78,6 +88,7 @@ public class BoatInterface  {
         }
     }
     public void rotateBoat(double pAngle){
+        pAngle += _CurrentAngle;
         while(_CurrentAngle<pAngle){
             pAngle-=0.01;
             if(pAngle<0)
@@ -87,6 +98,7 @@ public class BoatInterface  {
             
             ImageIcon newImage = new ImageIcon(createTransformedImage(_CurrentAngle,_CurrentLife,_Label));
             _Label.setIcon(newImage);
+            restoreValues();
             try {
                 _MainThread.sleep(50); ////////////////alambrado!!!
             } catch (InterruptedException ex) {
@@ -102,25 +114,39 @@ public class BoatInterface  {
             currentSen += Math.sin(_CurrentAngle);
             if(currentCos >= 1){
                 currentCos-=1;
-                if(_Label.getLocation().y-1>0){
+                if(_Label.getLocation().y-1>0 && !Utility.collide(_X, _Y-1, _Game.getBoats(), _X+_Width, _Y-1+_Heigth, false)){
+                   
                     _Label.setLocation(_Label.getLocation().x, _Label.getLocation().y-1); //invertd logic
+                    _Y-=1;
                 }
                     pPixels-=1;
             }else if(currentCos <= -1){
                 currentCos+=1;
-                if(_Label.getLocation().y+_Label.getSize().height < 650) //alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                if(_Label.getLocation().y+_Label.getSize().height+1 < 650 && !Utility.collide(_X, _Y+1, _Game.getBoats(), _X+_Width, _Y+1+_Heigth, false)){ //alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    
                     _Label.setLocation(_Label.getLocation().x, _Label.getLocation().y+1); //invertd logic
+                    _Y+=1;
+                }
+                
                 pPixels-=1;
             }
+            
             if(currentSen >= 1){
                 currentSen -= 1;
-                if(_Label.getLocation().x+_Label.getSize().width < 900)    //alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                
+                if(_Label.getLocation().x+1+_Label.getSize().width < 900 && !Utility.collide(_X+1, _Y, _Game.getBoats(), _X+1+_Width, _Y+_Heigth, false)){    //alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    
                     _Label.setLocation(_Label.getLocation().x+1, _Label.getLocation().y); //invertd logic
+                    _X+=1;
+                }
                 pPixels-=1;
             }else if(currentSen <= -1){
                 currentSen += 1;
-                if(_Label.getLocation().x-1 > 0)
+                if(_Label.getLocation().x-1 > 0 && !Utility.collide(_X-1, _Y, _Game.getBoats(), _X-1+_Width, _Y+_Heigth, false)){
+                    
                     _Label.setLocation(_Label.getLocation().x-1, _Label.getLocation().y); //invertd logic
+                    _X-=1;
+                }
                 pPixels-=1;
             }
             try {
@@ -139,27 +165,35 @@ public class BoatInterface  {
         
         double currentCos = 0;
         double currentSen = 0;
-        while(pTime > 0){
+        Boolean hit = false;
+        
+        while(pTime > 0 && hit == false){
             currentCos += Math.cos(_CurrentAngle);
             currentSen += Math.sin(_CurrentAngle);
             if(currentCos >= 1){
                 currentCos-=1;
-                shoot.setLocation(shoot.getLocation().x, shoot.getLocation().y-1); //invertd logic
-                pTime-=1;
+                shoot.setLocation(shoot.getLocation().x, shoot.getLocation().y-1); //invertd logic                
             }else if(currentCos <= -1){
                 currentCos+=1;
                 shoot.setLocation(shoot.getLocation().x, shoot.getLocation().y+1); //invertd logic
-                pTime-=1;
+                
             }
             if(currentSen >= 1){
                 currentSen -= 1;
                 shoot.setLocation(shoot.getLocation().x+1, shoot.getLocation().y); //invertd logic
-                pTime-=1;
+                
             }else if(currentSen <= -1){
                 currentSen += 1;
                 shoot.setLocation(shoot.getLocation().x-1, shoot.getLocation().y); //invertd logic
-                pTime-=1;
+                
             }
+            pTime-=0.1;
+            
+            if(Utility.collide(shoot.getLocation().x, shoot.getLocation().y, _Game.getBoats(),
+                        shoot.getLocation().x+shoot.getSize().width, shoot.getLocation().y+shoot.getSize().height, true)){
+                hit = true;
+            }
+            
             try {
                 _MainThread.sleep(50);
             } catch (InterruptedException ex) {
@@ -169,6 +203,90 @@ public class BoatInterface  {
         _Screen.getBackgroundLBL().remove(shoot);
         _Screen.getBackgroundLBL().validate();
         _Screen.getBackgroundLBL().repaint();
+    }
+    public void restoreValues(){
+        _X= _Label.getLocation().x;
+        _Y= _Label.getLocation().y;
+        _Width = _Label.getSize().width;
+        _Heigth = _Label.getSize().height;
+    }
+    public void hitted(){
+        setLifePoints(getLifePoints() - 1);
+        if(getLifePoints() == 2)
+            _CurrentLife = "boat_firsthit.png";
+        else if(getLifePoints() ==1)
+            _CurrentLife = "boat_secondhit.png";
+        else _CurrentLife = "boat_lasthit.png";
+    }
+
+    /**
+     * @return the x
+     */
+    public int getX() {
+        return _X;
+    }
+
+    /**
+     * @param x the x to set
+     */
+    public void setX(int x) {
+        this._X = x;
+    }
+
+    /**
+     * @return the y
+     */
+    public int getY() {
+        return _Y;
+    }
+
+    /**
+     * @param y the y to set
+     */
+    public void setY(int y) {
+        this._Y = y;
+    }
+
+    /**
+     * @return the width
+     */
+    public int getWidth() {
+        return _Width;
+    }
+
+    /**
+     * @param width the width to set
+     */
+    public void setWidth(int width) {
+        this._Width = width;
+    }
+
+    /**
+     * @return the length
+     */
+    public int getHeigth() {
+        return _Heigth;
+    }
+
+    /**
+     * @param length the length to set
+     */
+    public void setHeigth(int length) {
+        this._Heigth = length;
+    }
+
+    /**
+     * @return the _LifePoints
+     */
+    public int getLifePoints() {
+        return _LifePoints;
+    }
+
+    /**
+     * @param _LifePoints the _LifePoints to set
+     */
+    public void setLifePoints(int _LifePoints) {
+        this._LifePoints = _LifePoints;
     }
     
     

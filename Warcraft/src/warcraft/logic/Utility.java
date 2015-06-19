@@ -26,4 +26,21 @@ public class Utility {
     public static void showBytes(byte [] buffer) {
         System.out.write(buffer, 0, buffer.length);
     }
+    public static Boolean collide(int pPosX, int pPosY, Boat[] pBoats, int pPosX2, int pPosY2, Boolean shoot){
+	for(int index = 0 ; index< pBoats.length; index++){
+            if(pPosX != pBoats[index].getUIActions().getX() && pPosY != pBoats[index].getUIActions().getY())
+		if(pPosX < pBoats[index].getUIActions().getX()+pBoats[index].getUIActions().getWidth()
+                        && pPosX2 > pBoats[index].getUIActions().getX() 
+                        && pPosY < pBoats[index].getUIActions().getY()+pBoats[index].getUIActions().getHeigth()
+                        && pPosY2> pBoats[index].getUIActions().getY()){
+                    if(shoot){
+                        pBoats[index].getUIActions().hitted();
+                        System.out.println("HIT!!!!");
+                    }
+                    
+			return true;
+		}
+	}
+	return false;
+    }
 }

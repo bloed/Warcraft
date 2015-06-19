@@ -35,14 +35,39 @@ public class Boat extends Thread {
         return result;
     }
     public void run(){
-        _UIActions.moveBoat(400);
+        for(int index = 0; index < _Moves.size(); index++){
+            if(_UIActions.getLifePoints() <= 0)
+                break;
+            _UIActions.rotateBoat(_Moves.get(index).getDegree());
+            
+            if(_Moves.get(index).getAction().equals("avanzar")){
+                System.out.println(_Moves.get(index).getValue().intValue());
+                _UIActions.moveBoat(_Moves.get(index).getValue().intValue());
+            }else{
+                _UIActions.shoot(_Moves.get(index).getValue());
+            }
+        }
     }
-    public void setOnOcean(OceanInterface pOcean){
+    public void setOnOcean(OceanInterface pOcean, Game pGame){
         int x = Utility.generateRand(0, 900);
         int y = Utility.generateRand(0, 550);
         _Coordenates = new Point(x,y);
-        _UIActions = new BoatInterface(pOcean, _Coordenates,this);
+        setUIActions(new BoatInterface(pOcean, _Coordenates,this, pGame));
         
+    }
+
+    /**
+     * @return the _UIActions
+     */
+    public BoatInterface getUIActions() {
+        return _UIActions;
+    }
+
+    /**
+     * @param _UIActions the _UIActions to set
+     */
+    public void setUIActions(BoatInterface _UIActions) {
+        this._UIActions = _UIActions;
     }
     
 }
