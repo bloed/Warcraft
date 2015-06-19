@@ -27,7 +27,7 @@ public class TextManager {
     }    
     public void generateTXTStrategy(){
         //creates the txt with the 200 000 registers of possible moves
-        PrintWriter writer  = openWriteFile(Constants.FILENAME);
+        PrintWriter writer  = createFile(Constants.FILENAME);
         if(writer!=null){
             for(int counter = 0; counter < Constants.AMOUNT_OF_REGISTERS ; counter++){
                 double degree = (double)Utility.generateRand(Constants.MIN_DEGREE, Constants.MAX_DEGREE)/100;//we need fractions
@@ -47,9 +47,19 @@ public class TextManager {
             closeFile(writer);
             JOptionPane.showMessageDialog(null,"Moves.txt is finished!");
         }
-    } 
-    public static PrintWriter openWriteFile(String pFileName){
+    }
+    
+    public static PrintWriter createFile(String pFileName){
         //it replaces if there already exists a file with that name
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(pFileName); 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return writer;
+    }
+    public static PrintWriter openWriteFile(String pFileName){
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(new FileWriter(pFileName, true)); 
@@ -73,5 +83,10 @@ public class TextManager {
             System.out.println(e.getMessage());
             return null;
         }
+    }
+    public static File[] getAllFilenames(String pDirectory){
+        File folder = new File(pDirectory);
+        File[] listOfFiles = folder.listFiles();
+        return listOfFiles;
     }
 }

@@ -1,13 +1,16 @@
 package warcraft.logic;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Scanner;
 import javax.crypto.Cipher;
 import javax.swing.JOptionPane;
+
 
 
 public class SecurityManager {
@@ -33,7 +36,7 @@ public class SecurityManager {
             
             byte[] seed = pPin.getBytes();
             KeyPairGenerator keysGenerator = KeyPairGenerator.getInstance("RSA");
-            keysGenerator.initialize(1024, new SecureRandom(seed));
+            keysGenerator.initialize(512, new SecureRandom(seed));
             KeyPair keyPair =  keysGenerator.generateKeyPair();
             return keyPair;
         }
@@ -43,25 +46,25 @@ public class SecurityManager {
         }    
     }
     
-    public byte[] encrypt(Key pKey, String pString){
+    public void encrypt(Key pKey, String pFileName , Object pObjToEncrypt){
+        //encripts the filename, and creates a file with the object
         try{
-            byte[] dataBytes = pString.getBytes();
-            //byte[] b = string.getBytes(Charset.forName("UTF-8"));
+            byte[] dataBytes = pFileName.getBytes();
             _Cipher.init(Cipher.ENCRYPT_MODE, pKey);  // Cifra con la clave publica
             System.out.println("3a. Cifrar con clave publica");
             byte[] cipherData = _Cipher.doFinal(dataBytes);
             System.out.println("TEXTO CIFRADO:");
             Utility.showBytes(cipherData);
             System.out.println("\n-------------------------------");
-            return cipherData;
+            String hexCipherData = Utility.bytesToHex(cipherData);//transforms cypher data in hex
+            DataManager.grabarObjeto("Saved Games/"+hexCipherData, pObjToEncrypt);//saves objecs
         }
         catch(Exception e){
             System.out.println(e.getMessage());
-            return null;
         }
     }
     
-    public String deEncrypt(Key pKey, byte[] cipherData){
+    public Boolean deEncrypt(Key pKey, byte[] cipherData){
         try{
             _Cipher.init(Cipher.DECRYPT_MODE, pKey); // Descrifra con la clave privad
             System.out.println("3b. Descifrar con clave privada");
@@ -69,38 +72,52 @@ public class SecurityManager {
             System.out.println("TEXTO DESCIFRADO:");
             Utility.showBytes(deEncryptData);
             System.out.println("\n-------------------------------");
-            return new String(deEncryptData, "UTF-8");//transforms the deencrypted dat to a string
+            return true;//the cipherData was dencrypted correctly.
         }
-        catch(Exception e){
+        catch(Exception e){//invalid key
             System.out.println(e.getMessage());
-            return "";
+            return false;
         }
     }   
-    public void mainAsymetricEncryption(String pMessage){
+    public void mainAsymetricEncryption(String pFileName, Object pObjToEncrypt){
         String pin = Utility.generateRand(1000, 10000).toString();
-        while(isNotValidPin(pin)){//pin must be unique
+        while(pinExists(pin)){//pin must be unique
             pin = Utility.generateRand(1000, 10000).toString();
         }
         writeNewPin(pin);//the new ping used to generate keys must be addes to the .txt
         KeyPair keyPair = generateKeys(pin);
         Key publicKey = keyPair.getPublic();
-        Key privateKey = keyPair.getPrivate();
-        byte [] encryptData = encrypt(publicKey , pMessage);
+        encrypt(publicKey , pFileName, pObjToEncrypt);
     }
     
-    public String mainAsymetricDEncryption(byte[] EncyprtedData, String pPin){
-        if (isNotValidPin(pPin)){
+    public Object mainAsymetricDEncryption(String pPin){
+        //returns a Game corresponding to that pin.
+        if (pinExists(pPin)){
             //dencrypt
             KeyPair keyPair = generateKeys(pPin);
             Key privateKey = keyPair.getPrivate();
-            deEncrypt(privateKey, EncyprtedData);
+            byte[] encryptedData = null;
+            Object game = null;
+            File[] listOfFiles = TextManager.getAllFilenames("./Saved Games");
+            for (int fileNumber = 0; fileNumber < listOfFiles.length; fileNumber++) {
+                if (listOfFiles[fileNumber].isFile()){
+                    String  hexRepresentation = listOfFiles[fileNumber].getName();
+                    encryptedData = Utility.hexStringToByteArray(hexRepresentation);
+                    if (deEncrypt(privateKey, encryptedData) == true){
+                        game = DataManager.leerObjeto("Saved Games/" + hexRepresentation);
+                        break;
+                    }
+                    
+                }
+            }
+            return game;//if not correct pin, return null
         }
         else{ 
             JOptionPane.showMessageDialog(null, "The pin that was given doesn´t correpond to any game.");
         }
-        return "";
+        return null;
     }
-    public Boolean isNotValidPin(String pPin){
+    private Boolean pinExists(String pPin){
         Scanner scan = TextManager.openReadFile("Pins.txt");
         String currentPin;
         while(scan.hasNext()){
@@ -111,11 +128,13 @@ public class SecurityManager {
         }
         return false;
     }
-    public void writeNewPin(String pPin){
+    private void writeNewPin(String pPin){
         PrintWriter writer = TextManager.openWriteFile("Pins.txt");
         TextManager.addRecord(writer, pPin);
         TextManager.closeFile(writer);
     }
+    
 }
- 
+
+
 

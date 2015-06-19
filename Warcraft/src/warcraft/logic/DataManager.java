@@ -17,6 +17,7 @@ import java.io.ObjectOutputStream;
  * @author Xelop
  */
 public class DataManager {
+    
     public static boolean grabarObjeto (String file, Object obj)
     {
         ObjectOutputStream salida;
