@@ -1,8 +1,10 @@
 package warcraft;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import warcraft.UI.MainMenu;
+import warcraft.logic.DataManager;
 import warcraft.logic.Game;
 import warcraft.logic.Move;
 import warcraft.logic.TextManager;
@@ -29,8 +31,11 @@ public class Main {
         //Game game = Game.getInstance();*/
         //game.setBoats(threadManager.mainStrategy());
         //game now contains a list of all the boatszz
-        //SecurityManager securityManager = SecurityManager.getInstance();
+        SecurityManager securityManager = SecurityManager.getInstance();
         //SecurityManager caca = new SecurityManager();
-        //securityManager.mainAsymetricEncryption("caca");
+        //securityManager.mainAsymetricEncryption("caca","objeto3");
+        Object ob = securityManager.mainAsymetricDEncryption("5637");
+        String finall = (String)ob;
+        System.out.println(finall);
     }
 }
