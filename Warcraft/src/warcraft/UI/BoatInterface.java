@@ -5,6 +5,7 @@
  */
 package warcraft.UI;
 
+import com.sun.corba.se.impl.orbutil.closure.Constant;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
@@ -18,6 +19,8 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import warcraft.logic.Boat;
+import warcraft.logic.Constants;
 import warcraft.logic.Game;
 import warcraft.logic.Utility;
 
@@ -34,10 +37,11 @@ public class BoatInterface  {
     private OceanInterface _Screen;
     private Thread _MainThread;
     private Game _Game;
+    private Boat _Boat;
     private int _X, _Y, _Width, _Heigth;
     
     
-    public BoatInterface(OceanInterface pOcean, Point pCoordenates, Thread pThread, Game pGame){
+    public BoatInterface(OceanInterface pOcean, Point pCoordenates, Thread pThread, Game pGame, Boat pBoat){
         _CurrentAngle = 0;
         _CurrentLife = "boat.png";
         _Label = new JLabel();
@@ -46,8 +50,12 @@ public class BoatInterface  {
         _MainThread = pThread;
         _Game = pGame;
         _LifePoints = 3;
+        _Boat = pBoat;
+        _Label.setLocation(pCoordenates);
+        _X = pCoordenates.x;
+        _Y = pCoordenates.y;
         
-        ImageIcon newImage = new ImageIcon(createTransformedImage(_CurrentAngle, _CurrentLife,_Label));
+        ImageIcon newImage = new ImageIcon( BoatInterface.class.getResource("/warcraft/Images/"+_CurrentLife));
         _Label.setIcon(newImage);
         _Screen.getBackgroundLBL().add(_Label);
         _Label.setLocation(pCoordenates);
@@ -69,6 +77,12 @@ public class BoatInterface  {
             int heigth = image.getHeight();
             int newWidth = (int) Math.floor(width * cos + heigth * sin); //new value from the moved positions of th angle
             int newHeigth = (int) Math.floor(heigth * cos + width * sin);
+            
+            if(Utility.collide(_X, _Y, _Game.getBoats(),
+                        _X+newWidth, _Y+ newHeigth, false,_Boat)){
+                return null;
+            }
+            
             pLabel.setSize(newWidth, newHeigth);
             _Width = newWidth;
             _Heigth = newHeigth;
@@ -95,9 +109,15 @@ public class BoatInterface  {
                 _CurrentAngle += pAngle +0.01; //0.1 alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             else
                 _CurrentAngle+=0.01;
+            BufferedImage newImage = createTransformedImage(_CurrentAngle,_CurrentLife,_Label);
             
-            ImageIcon newImage = new ImageIcon(createTransformedImage(_CurrentAngle,_CurrentLife,_Label));
-            _Label.setIcon(newImage);
+            if(newImage != null){
+                ImageIcon transformedImage = new ImageIcon(newImage);
+                 _Label.setIcon(transformedImage);
+            }else{
+                _CurrentAngle -= 0.01;
+            }
+            
             restoreValues();
             try {
                 _MainThread.sleep(50); ////////////////alambrado!!!
@@ -114,7 +134,7 @@ public class BoatInterface  {
             currentSen += Math.sin(_CurrentAngle);
             if(currentCos >= 1){
                 currentCos-=1;
-                if(_Label.getLocation().y-1>0 && !Utility.collide(_X, _Y-1, _Game.getBoats(), _X+_Width, _Y-1+_Heigth, false)){
+                if(_Label.getLocation().y-1>0 && !Utility.collide(_X, _Y-1, _Game.getBoats(), _X+_Width, _Y-1+_Heigth, false,_Boat)){
                    
                     _Label.setLocation(_Label.getLocation().x, _Label.getLocation().y-1); //invertd logic
                     _Y-=1;
@@ -122,7 +142,7 @@ public class BoatInterface  {
                     pPixels-=1;
             }else if(currentCos <= -1){
                 currentCos+=1;
-                if(_Label.getLocation().y+_Label.getSize().height+1 < 650 && !Utility.collide(_X, _Y+1, _Game.getBoats(), _X+_Width, _Y+1+_Heigth, false)){ //alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                if(_Label.getLocation().y+_Label.getSize().height+1 < 650 && !Utility.collide(_X, _Y+1, _Game.getBoats(), _X+_Width, _Y+1+_Heigth, false,_Boat)){ //alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     
                     _Label.setLocation(_Label.getLocation().x, _Label.getLocation().y+1); //invertd logic
                     _Y+=1;
@@ -134,7 +154,7 @@ public class BoatInterface  {
             if(currentSen >= 1){
                 currentSen -= 1;
                 
-                if(_Label.getLocation().x+1+_Label.getSize().width < 900 && !Utility.collide(_X+1, _Y, _Game.getBoats(), _X+1+_Width, _Y+_Heigth, false)){    //alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                if(_Label.getLocation().x+1+_Label.getSize().width < 900 && !Utility.collide(_X+1, _Y, _Game.getBoats(), _X+1+_Width, _Y+_Heigth, false,_Boat)){    //alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     
                     _Label.setLocation(_Label.getLocation().x+1, _Label.getLocation().y); //invertd logic
                     _X+=1;
@@ -142,7 +162,7 @@ public class BoatInterface  {
                 pPixels-=1;
             }else if(currentSen <= -1){
                 currentSen += 1;
-                if(_Label.getLocation().x-1 > 0 && !Utility.collide(_X-1, _Y, _Game.getBoats(), _X-1+_Width, _Y+_Heigth, false)){
+                if(_Label.getLocation().x-1 > 0 && !Utility.collide(_X-1, _Y, _Game.getBoats(), _X-1+_Width, _Y+_Heigth, false,_Boat)){
                     
                     _Label.setLocation(_Label.getLocation().x-1, _Label.getLocation().y); //invertd logic
                     _X-=1;
@@ -172,30 +192,30 @@ public class BoatInterface  {
             currentSen += Math.sin(_CurrentAngle);
             if(currentCos >= 1){
                 currentCos-=1;
-                shoot.setLocation(shoot.getLocation().x, shoot.getLocation().y-1); //invertd logic                
+                shoot.setLocation(shoot.getLocation().x, shoot.getLocation().y-Constants.SHOOT_DISTANCE); //invertd logic                
             }else if(currentCos <= -1){
                 currentCos+=1;
-                shoot.setLocation(shoot.getLocation().x, shoot.getLocation().y+1); //invertd logic
+                shoot.setLocation(shoot.getLocation().x, shoot.getLocation().y+Constants.SHOOT_DISTANCE); //invertd logic
                 
             }
             if(currentSen >= 1){
                 currentSen -= 1;
-                shoot.setLocation(shoot.getLocation().x+1, shoot.getLocation().y); //invertd logic
+                shoot.setLocation(shoot.getLocation().x+Constants.SHOOT_DISTANCE, shoot.getLocation().y); //invertd logic
                 
             }else if(currentSen <= -1){
                 currentSen += 1;
-                shoot.setLocation(shoot.getLocation().x-1, shoot.getLocation().y); //invertd logic
+                shoot.setLocation(shoot.getLocation().x-Constants.SHOOT_DISTANCE, shoot.getLocation().y); //invertd logic
                 
             }
-            pTime-=0.1;
+            pTime-=0.02;
             
             if(Utility.collide(shoot.getLocation().x, shoot.getLocation().y, _Game.getBoats(),
-                        shoot.getLocation().x+shoot.getSize().width, shoot.getLocation().y+shoot.getSize().height, true)){
+                        shoot.getLocation().x+shoot.getSize().width, shoot.getLocation().y+shoot.getSize().height, true,_Boat)){
                 hit = true;
             }
             
             try {
-                _MainThread.sleep(50);
+                _MainThread.sleep(20);
             } catch (InterruptedException ex) {
                 Logger.getLogger(BoatInterface.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -212,11 +232,16 @@ public class BoatInterface  {
     }
     public void hitted(){
         setLifePoints(getLifePoints() - 1);
+        System.out.println(getLifePoints());
         if(getLifePoints() == 2)
             _CurrentLife = "boat_firsthit.png";
         else if(getLifePoints() ==1)
             _CurrentLife = "boat_secondhit.png";
-        else _CurrentLife = "boat_lasthit.png";
+        else{ 
+            _CurrentLife = "boat_lasthit.png";
+            _Label.setIcon(new ImageIcon(createTransformedImage(_CurrentAngle, _CurrentLife, _Label)));
+            
+        }
     }
 
     /**

@@ -36,9 +36,11 @@ public class Boat extends Thread {
     }
     public void run(){
         for(int index = 0; index < _Moves.size(); index++){
-            if(_UIActions.getLifePoints() <= 0)
+            if(_UIActions.getLifePoints() <= 0){
                 break;
-            _UIActions.rotateBoat(_Moves.get(index).getDegree());
+            }
+            double degree = Utility.getDegree(_Moves.get(index).getDegree());
+            _UIActions.rotateBoat(degree);
             
             if(_Moves.get(index).getAction().equals("avanzar")){
                 System.out.println(_Moves.get(index).getValue().intValue());
@@ -49,10 +51,10 @@ public class Boat extends Thread {
         }
     }
     public void setOnOcean(OceanInterface pOcean, Game pGame){
-        int x = Utility.generateRand(0, 900);
-        int y = Utility.generateRand(0, 550);
+        int x = Utility.generateRand(0, 800);
+        int y = Utility.generateRand(0, 500);
         _Coordenates = new Point(x,y);
-        setUIActions(new BoatInterface(pOcean, _Coordenates,this, pGame));
+        setUIActions(new BoatInterface(pOcean, _Coordenates,this, pGame,this));
         
     }
 

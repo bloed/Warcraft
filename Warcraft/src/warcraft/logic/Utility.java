@@ -3,6 +3,7 @@ import java.util.Random;
 
 
 public class Utility {
+    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
     public static Integer generateRand(int pMinRange, int pMaxRange){
         //inclusive for minRange, exclusive for maxRange
         Random generator = new Random();
@@ -27,9 +28,9 @@ public class Utility {
         System.out.write(buffer, 0, buffer.length);
     }
 
-    public static Boolean collide(int pPosX, int pPosY, Boat[] pBoats, int pPosX2, int pPosY2, Boolean shoot){
+    public static Boolean collide(int pPosX, int pPosY, Boat[] pBoats, int pPosX2, int pPosY2, Boolean shoot, Boat pBoat){
 	for(int index = 0 ; index< pBoats.length; index++){
-            if(pPosX != pBoats[index].getUIActions().getX() && pPosY != pBoats[index].getUIActions().getY())
+            if(!pBoats[index].equals(pBoat)){
 		if(pPosX < pBoats[index].getUIActions().getX()+pBoats[index].getUIActions().getWidth()
                         && pPosX2 > pBoats[index].getUIActions().getX() 
                         && pPosY < pBoats[index].getUIActions().getY()+pBoats[index].getUIActions().getHeigth()
@@ -41,10 +42,11 @@ public class Utility {
                     
 			return true;
 		}
+            }
 	}
 	return false;
     }
-    public final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+    
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for ( int j = 0; j < bytes.length; j++ ) {
@@ -63,5 +65,9 @@ public class Utility {
         }
         return data;
 
+    }
+    
+    public static double getDegree(double pDegree){
+        return pDegree * Constants.MAX_RAD_VAL;
     }
 }
