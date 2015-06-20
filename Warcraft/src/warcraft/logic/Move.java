@@ -2,11 +2,7 @@ package warcraft.logic;
 
 
 public class Move {
-    private final Double _Degree;
-    private final Integer _Id;
-    private final String _Action;
-    private final Double _Value;
-    
+    //class used as a repository of the move of the form : degree|id|action|value
     public Move(Double pDegree, Integer pId, String pAction, Double pValue){
         _Degree = pDegree;
         _Id = pId;
@@ -29,4 +25,8 @@ public class Move {
     public String toString(){
         return _Degree + "|" + _Id + "|" + _Action + "|" + _Value;
     }
+    private final Double _Degree;
+    private final Integer _Id;
+    private final String _Action;
+    private final Double _Value;
 }

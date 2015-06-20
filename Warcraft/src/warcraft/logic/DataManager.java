@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package warcraft.logic;
 
 import java.io.File;
@@ -12,34 +7,29 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-/**
- *
- * @author Xelop
- */
 public class DataManager {
-    
-    public static boolean grabarObjeto (String file, Object obj)
+    //Class used to save and load objects when saving the game.
+    public static boolean saveObject (String pFile, Object objToSave)
     {
-        ObjectOutputStream salida;
+        ObjectOutputStream writer;
         try {
-            salida = new ObjectOutputStream(new FileOutputStream(file));
-            //salida.writeObject("guardar un objeto compuesto\n");
-            salida.writeObject(obj);
-            salida.close();
+            writer = new ObjectOutputStream(new FileOutputStream(pFile));
+            writer.writeObject(objToSave);
+            writer.close();
             return true;
         } catch (IOException ex) {
             System.out.println("Error reading Serialized object with error \n" + ex);
             return false; 
         }
     }    
-    public static Object leerObjeto (String file)
+    public static Object readObject (String pFile)
     {
         Object obj;
-        ObjectInputStream entrada;
+        ObjectInputStream reader;
         try {
-            entrada = new ObjectInputStream(new FileInputStream(file));
-            obj = entrada.readObject();
-            entrada.close();
+            reader = new ObjectInputStream(new FileInputStream(pFile));
+            obj = reader.readObject();
+            reader.close();
             return obj;
         } catch (IOException | ClassNotFoundException ex) { 
             System.out.println("Error reading Serialized object with error \n" + ex);

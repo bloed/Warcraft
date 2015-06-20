@@ -4,18 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 
 public class TextManager {
-    private static TextManager _Instance = null;
-    private final String _Moves[];
-    
-  
+   //this class is in charge to manage every read,write,create files.
     private TextManager(){
         _Moves = new String[] {"avanzar","disparar"};
     }   
@@ -85,8 +79,11 @@ public class TextManager {
         }
     }
     public static File[] getAllFilenames(String pDirectory){
+        //get all the fileNames of a given directory
         File folder = new File(pDirectory);
         File[] listOfFiles = folder.listFiles();
         return listOfFiles;
     }
+    private static TextManager _Instance = null;
+    private final String _Moves[];//contains possible differnt moves
 }

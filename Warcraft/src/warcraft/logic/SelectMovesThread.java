@@ -4,13 +4,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class SelectMovesThread extends Thread{
+    //Class used to select the moves for a boat with an specific id. Runs in parallel
     
-    private Integer _BoatId;
-    private Integer _Start;
-    private Integer _Final;
-    private ArrayList<Move> _Moves;
-    
-    SelectMovesThread(Integer pStart, Integer pFinal , Integer pBoatId){
+    public SelectMovesThread(Integer pStart, Integer pFinal , Integer pBoatId){
         _Moves = new ArrayList();
         _Start = pStart;
         _Final = pFinal;
@@ -41,7 +37,9 @@ public class SelectMovesThread extends Thread{
             scanner.close();
         }
     }
-    
+    public ArrayList<Move> getProcessedMoves(){
+        return _Moves;
+    }
     private Integer getRecordId(String pRecord){
         //reveices a string of the form degree|id|action|value
         Integer delimeter = pRecord.indexOf("|");
@@ -50,7 +48,6 @@ public class SelectMovesThread extends Thread{
         String id = pRecord.substring(0, delimeter);//we cut it to reach the id
         return Integer.parseInt(id);
     }
-    
     private Move processRecord(String pRecord){
         //receives a record of the form : degree|id|action|value
         ArrayList<String> records = new ArrayList();//[0] = degree , [1] = id, [2] = action, [3] = value
@@ -74,7 +71,9 @@ public class SelectMovesThread extends Thread{
         Double value = Double.parseDouble(records.get(3));
         return new Move(degree, id, action, value);
     }
-    public ArrayList<Move> getProcessedMoves(){
-        return _Moves;
-    }
+    
+    private Integer _BoatId;
+    private Integer _Start;
+    private Integer _Final;
+    private ArrayList<Move> _Moves;
 }

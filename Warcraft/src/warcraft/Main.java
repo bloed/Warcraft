@@ -35,8 +35,8 @@ public class Main {
         SecurityManager securityManager = SecurityManager.getInstance();
         //SecurityManager caca = new SecurityManager();
         //securityManager.mainAsymetricEncryption("caca","objeto3");
-        Object ob = securityManager.mainAsymetricDEncryption("5637");
-        String finall = (String)ob;
-        System.out.println(finall);
+        //Object ob = securityManager.mainAsymetricDEncryption("5637");
+        //String finall = (String)ob;
+        //System.out.println(finall);
     }
 }

@@ -8,6 +8,9 @@ package warcraft.UI;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import warcraft.logic.SecurityManager;
+import warcraft.logic.Game;
 
 /**
  *
@@ -187,7 +190,22 @@ public class PinLoad extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void _btn_LoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__btn_LoadActionPerformed
-        // TODO add your handling code here:
+        String ping = _txt_Pin.getText();
+        SecurityManager securityManager = SecurityManager.getInstance();
+        Object gameObject = securityManager.mainAsymetricDEncryption(ping);
+        if (gameObject != null){
+            if(gameObject instanceof Game){
+                Game loadedGame = (Game)gameObject;
+                Game.setInstance(loadedGame);
+                this.dispose();
+                _Menu.setVisible(true);
+            }
+        }
+        else{//incorrect ping
+            JOptionPane.showMessageDialog(null, "Incorrect pin.");
+        }
+    
+    
     }//GEN-LAST:event__btn_LoadActionPerformed
 
     private void _txt_PinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__txt_PinActionPerformed

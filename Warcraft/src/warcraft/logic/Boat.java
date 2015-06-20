@@ -1,24 +1,12 @@
 package warcraft.logic;
 
-
-
 import java.awt.Point;
 import java.util.ArrayList;
 import warcraft.UI.BoatInterface;
 import warcraft.UI.OceanInterface;
 
-
-/**
- *
- * @author Josué
- */
 public class Boat extends Thread {
-
-    private ArrayList<Move> _Moves;
-    private Integer _CurrentMove;
-    private BoatInterface _UIActions;
-    private Point _Coordenates;
-    
+    //This class represents a single boat.
     public Boat(ArrayList<Move> pList){
         _Moves = pList;
         _CurrentMove = 0;
@@ -54,22 +42,16 @@ public class Boat extends Thread {
         int x = Utility.generateRand(0, 800);
         int y = Utility.generateRand(0, 500);
         _Coordenates = new Point(x,y);
-        setUIActions(new BoatInterface(pOcean, _Coordenates,this, pGame,this));
-        
+        setUIActions(new BoatInterface(pOcean, _Coordenates,this, pGame,this));   
     }
-
-    /**
-     * @return the _UIActions
-     */
     public BoatInterface getUIActions() {
         return _UIActions;
     }
-
-    /**
-     * @param _UIActions the _UIActions to set
-     */
-    public void setUIActions(BoatInterface _UIActions) {
-        this._UIActions = _UIActions;
+    public void setUIActions(BoatInterface pUIActions) {
+        this._UIActions = pUIActions;
     }
-    
+    private ArrayList<Move> _Moves;
+    private Integer _CurrentMove;
+    private BoatInterface _UIActions;
+    private Point _Coordenates;
 }
