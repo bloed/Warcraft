@@ -239,9 +239,8 @@ public class BoatInterface  {
             _CurrentLife = "boat_secondhit.png";
         else{ 
             _CurrentLife = "boat_lasthit.png";
-            _Label.setIcon(new ImageIcon(createTransformedImage(_CurrentAngle, _CurrentLife, _Label)));
-            
         }
+        _Label.setIcon(new ImageIcon(createTransformedImage(_CurrentAngle, _CurrentLife, _Label)));
     }
 
     /**
