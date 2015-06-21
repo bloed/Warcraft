@@ -37,34 +37,33 @@ public class Utility {
                         && pPosY2> pBoats[index].getUIActions().getY()){
                     if(shoot){
                         pBoats[index].gotHit();
-                    }
-                    
+                    } 
 			return true;
 		}
             }
 	}
 	return false;
     }
+    public static double getDegree(double pDegree){
+        return pDegree * Constants.MAX_RAD_VAL;
+    }
     public static String bytesToHex(byte[] pBytes) {
         char[] hexChars = new char[pBytes.length * 2];
         for (int byteIndex = 0; byteIndex < pBytes.length; byteIndex++ ) {
-            int v = pBytes[byteIndex] & 0xFF;
-            hexChars[byteIndex * 2] = hexArray[v >>> 4];
-            hexChars[byteIndex * 2 + 1] = hexArray[v & 0x0F];
+            int andShell = pBytes[byteIndex] & 0xFF;
+            hexChars[byteIndex * 2] = hexArray[andShell >>> 4];
+            hexChars[byteIndex * 2 + 1] = hexArray[andShell & 0x0F];
         }
         return new String(hexChars);
     }
     public static byte[] hexStringToByteArray(String pHexString) {
         int len = pHexString.length();
         byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(pHexString.charAt(i), 16) << 4)
-                                 + Character.digit(pHexString.charAt(i+1), 16));
+        for (int indexHex = 0; indexHex < len; indexHex += 2) {
+            data[indexHex / 2] = (byte) ((Character.digit(pHexString.charAt(indexHex), 16) << 4)
+                                 + Character.digit(pHexString.charAt(indexHex+1), 16));
         }
         return data;
     } 
-    public static double getDegree(double pDegree){
-        return pDegree * Constants.MAX_RAD_VAL;
-    }
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
 }

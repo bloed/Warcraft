@@ -93,7 +93,6 @@ public class SecurityManager {
         try{
             _Cipher.init(Cipher.DECRYPT_MODE, pKey); // dencrypt with private key
             byte[] deEncryptData = _Cipher.doFinal(cipherData);
-            Utility.showBytes(deEncryptData);
             return true;//the cipherData was dencrypted correctly.
         }
         catch(Exception e){//invalid key
@@ -102,7 +101,7 @@ public class SecurityManager {
         }
     }   
     private Boolean pinExists(String pPin){
-        Scanner scan = TextManager.openReadFile("Pins.txt");
+        Scanner scan = TextManager.openReadFile(Constants.PINS_FILENAME);
         String currentPin;
         while(scan.hasNext()){
             currentPin = scan.next();
@@ -113,7 +112,7 @@ public class SecurityManager {
         return false;//no pin was found
     }
     private void writeNewPin(String pPin){//writes the new ping in the txt
-        PrintWriter writer = TextManager.openWriteFile("Pins.txt");
+        PrintWriter writer = TextManager.openWriteFile(Constants.PINS_FILENAME);
         TextManager.addRecord(writer, pPin);
         TextManager.closeFile(writer);
     }

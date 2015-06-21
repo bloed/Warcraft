@@ -16,25 +16,30 @@ public class SelectMovesThread extends Thread{
     @Override
     public void run(){
         //both pStart is inclusive and pFinal is exlusive. This runs in parallel.
-        Scanner scanner = TextManager.openReadFile(Constants.FILENAME);
-        String currentRecord;
-        Integer currentId; 
-        if(scanner != null){
-            Integer amountToIgnore = _Start;
-            while(amountToIgnore != 0){
-                scanner.next();//just are read but not processed
-                amountToIgnore--;//until we reach pStart
-            }
-            Integer amountToRead =_Final - _Start;
-            while(amountToRead != 0){
-                currentRecord = scanner.next();
-                currentId = getRecordId(currentRecord);
-                if(currentId == _BoatId ||currentId%10 == _BoatId%10){//if same Id, or id that ends wit the same digit
-                    _Moves.add(processRecord(currentRecord));
+        try{
+            Scanner scanner = TextManager.openReadFile(Constants.FILENAME);
+            String currentRecord;
+            Integer currentId; 
+            if(scanner != null){
+                Integer amountToIgnore = _Start;
+                while(amountToIgnore != 0){
+                    scanner.next();//just are read but not processed
+                    amountToIgnore--;//until we reach pStart
                 }
-                amountToRead--;
+                Integer amountToRead =_Final - _Start;
+                while(amountToRead != 0){
+                    currentRecord = scanner.next();
+                    currentId = getRecordId(currentRecord);
+                    if(currentId == _BoatId ||currentId%10 == _BoatId%10){//if same Id, or id that ends wit the same digit
+                        _Moves.add(processRecord(currentRecord));
+                    }
+                    amountToRead--;
+                }
+                scanner.close();
             }
-            scanner.close();
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
         }
     }
     public ArrayList<Move> getProcessedMoves(){

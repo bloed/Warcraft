@@ -37,7 +37,7 @@ public class ThreadManager {
         initializeMergeThreads(pAmountProcesors, movesPerMergeThread, allSelectedMoves);
         waitForAllThreads();//waits for all merge threads to finish
         ArrayList<Move> finalResult = joinAnswerMergeThreads(pAmountProcesors);
-        System.out.println("Boat with id :  " + pBoatId + "was created, with : " + finalResult.size() + " different moves.");
+        System.out.println("Boat with id :  " + pBoatId + " was created, with : " + finalResult.size() + " different moves.");
         return new Boat(finalResult);//a whole new boat was created
     }
     private void initializeSelectThreads(Integer pAmountOfThreads, Integer amountRegistersPerThread, Integer pBoatId){

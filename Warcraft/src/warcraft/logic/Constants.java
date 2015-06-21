@@ -27,4 +27,5 @@ public class Constants {
     public static final Integer RANDOM_SCREEN_X = 800;
     public static final Integer RANDOM_SCREEN_Y = 500;
     public static final double NOTICEABLE_DEGREE = 0.01;
+    public static final String PINS_FILENAME = "Pins.txt";
 }
