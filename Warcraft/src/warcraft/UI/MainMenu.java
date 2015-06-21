@@ -65,7 +65,7 @@ public class MainMenu extends javax.swing.JFrame {
                 game.setBoats(threadManager.mainStrategy());
                 
                 //////////////////////////////////////////////////////
-                OceanInterface newOcean = new OceanInterface(game);
+                OceanInterface newOcean = new OceanInterface(game, false);
                 newOcean.setVisible(true);
                 _Instance.dispose();
                 

@@ -27,14 +27,16 @@ public class OceanInterface extends javax.swing.JFrame implements KeyListener{
      */
     Game _game;
     
-    public OceanInterface(Game pGame) {
+    public OceanInterface(Game pGame, Boolean pSavedGame) {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize(); //two lines of code for it to start centered
         this.setLocation(dim.width/4-this.getSize().width/4, dim.height/4-this.getSize().height/4); 
         _game = pGame;
         addKeyListener(this);
         initComponents();
-        _game.setOceans(this);
-        _game.startThreads();
+        if(!pSavedGame){
+            _game.setOceans(this);
+            _game.startThreads();
+        }
     }
 
     /**
@@ -114,7 +116,7 @@ public class OceanInterface extends javax.swing.JFrame implements KeyListener{
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == 83){
             SecurityManager securityManager = SecurityManager.getInstance();
-            String pin = securityManager.mainAsymetricEncryption("game", Game.getInstance());
+            String pin = securityManager.mainAsymetricEncryption("game", _game.saveGame());
             JOptionPane.showMessageDialog(this, "Game saved. Your pin is: "+ pin);
         }
     }

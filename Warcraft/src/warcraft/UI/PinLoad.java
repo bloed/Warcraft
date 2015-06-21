@@ -11,6 +11,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import warcraft.logic.SecurityManager;
 import warcraft.logic.Game;
+import warcraft.logic.SavedGame;
+
 
 /**
  *
@@ -46,6 +48,7 @@ public class PinLoad extends javax.swing.JFrame {
         _btn_Load = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -100,13 +103,25 @@ public class PinLoad extends javax.swing.JFrame {
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/warcraft/Images/boton.png"))); // NOI18N
 
+        jButton1.setText("Back");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(99, 99, 99)
-                .addComponent(jLabel3)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(99, 99, 99)
+                        .addComponent(jLabel3))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(169, 169, 169)
+                        .addComponent(jButton1)))
                 .addContainerGap(168, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -114,7 +129,9 @@ public class PinLoad extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(69, Short.MAX_VALUE)
                 .addComponent(jLabel3)
-                .addGap(284, 284, 284))
+                .addGap(160, 160, 160)
+                .addComponent(jButton1)
+                .addGap(101, 101, 101))
         );
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/warcraft/Images/menu.png"))); // NOI18N
@@ -194,11 +211,11 @@ public class PinLoad extends javax.swing.JFrame {
         SecurityManager securityManager = SecurityManager.getInstance();
         Object gameObject = securityManager.mainAsymetricDEncryption(ping);
         if (gameObject != null){
-            if(gameObject instanceof Game){
-                Game loadedGame = (Game)gameObject;
-                Game.setInstance(loadedGame);
+            if(gameObject instanceof SavedGame){
+                SavedGame loadedGame = (SavedGame)gameObject;
+                loadedGame.loadGame();
                 this.dispose();
-                _Menu.setVisible(true);
+                _Menu.dispose();
             }
         }
         else{//incorrect ping
@@ -215,9 +232,14 @@ public class PinLoad extends javax.swing.JFrame {
     private void _btn_LoadMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event__btn_LoadMouseClicked
         // TODO add your handling code here:
         //Falta if de si existe el pin o no
+       
+    }//GEN-LAST:event__btn_LoadMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
         _Menu.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event__btn_LoadMouseClicked
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -257,6 +279,7 @@ public class PinLoad extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton _btn_Load;
     private javax.swing.JTextField _txt_Pin;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

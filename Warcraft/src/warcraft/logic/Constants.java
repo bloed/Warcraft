@@ -12,7 +12,7 @@ public class Constants {
     public static final Integer MAX_VALUE_TIME = 42;
     public static final Integer MIN_VALUE_PIXELS = 10;
     public static final Integer MAX_VALUE_PIXELS = 201;
-    public static final double MAX_RAD_VAL = 6.28;
+    public static final double MAX_RAD_VAL = 3.14;
     public static final Integer SHOOT_DISTANCE = 2;
     public static final String SAVED_GAMES_DIRECTORY = "Saved Games";
     public static final Integer MIN_VALUE_PIN = 1000;

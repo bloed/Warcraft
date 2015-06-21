@@ -1,7 +1,9 @@
 package warcraft.logic;
 
+import java.io.Serializable;
 
-public class Move {
+
+public class Move implements Serializable {
     //class used as a repository of the move of the form : degree|id|action|value
     public Move(Double pDegree, Integer pId, String pAction, Double pValue){
         _Degree = pDegree;
