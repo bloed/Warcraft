@@ -30,14 +30,13 @@ public class Utility {
     }
     public static Boolean collide(int pPosX, int pPosY, Boat[] pBoats, int pPosX2, int pPosY2, Boolean shoot, Boat pBoat){
 	for(int index = 0 ; index< pBoats.length; index++){
-            if(pBoats[index].getUIActions() != null && !pBoats[index].equals(pBoat)){
+            if(pBoats[index].getUIActions() != null && !pBoats[index].equals(pBoat)&& pBoats[index].getCurrentLife()>0){
 		if(pPosX < pBoats[index].getUIActions().getX()+pBoats[index].getUIActions().getWidth()
                         && pPosX2 > pBoats[index].getUIActions().getX() 
                         && pPosY < pBoats[index].getUIActions().getY()+pBoats[index].getUIActions().getHeigth()
                         && pPosY2> pBoats[index].getUIActions().getY()){
                     if(shoot){
-                        pBoats[index].getUIActions().hitted();
-                        System.out.println("HIT!!!!");
+                        pBoats[index].gotHit();
                     }
                     
 			return true;

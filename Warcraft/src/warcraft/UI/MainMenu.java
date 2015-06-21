@@ -5,6 +5,7 @@
  */
 package warcraft.UI;
 
+import warcraft.logic.BoatActions;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -37,19 +38,19 @@ public class MainMenu extends javax.swing.JFrame {
         
         initComponents();
         
-        _Play = new JButton(new ImageIcon(BoatInterface.class.getResource("/warcraft/Images/boton_play.png")));
+        _Play = new JButton(new ImageIcon(BoatActions.class.getResource("/warcraft/Images/boton_play.png")));
         _Play.setSize(176, 68);
         _lbl_Back.add(_Play);
         _Play.setLocation(150,425);
         _Play.setVisible(true);
         
-        _Load = new JButton(new ImageIcon(BoatInterface.class.getResource("/warcraft/Images/boton_load.png")));
+        _Load = new JButton(new ImageIcon(BoatActions.class.getResource("/warcraft/Images/boton_load.png")));
         _Load.setSize(176, 68);
         _lbl_Back.add(_Load);
         _Load.setLocation(550,425);
         _Load.setVisible(true);
         
-        _Txt = new JButton(new ImageIcon(BoatInterface.class.getResource("/warcraft/Images/boton_txt.png")));
+        _Txt = new JButton(new ImageIcon(BoatActions.class.getResource("/warcraft/Images/boton_txt.png")));
         _Txt.setSize(176, 68);
         _lbl_Back.add(_Txt);
         _Txt.setLocation(350,525);

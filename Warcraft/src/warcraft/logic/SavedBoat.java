@@ -8,19 +8,40 @@ package warcraft.logic;
 import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
-import warcraft.UI.BoatInterface;
 
 /**
  *
  * @author Xelop
  */
+
+
 public class SavedBoat implements Serializable {
-    private ArrayList<Move> _Moves;
-    private Integer _CurrentMove;
-    private Point _Coordenates;
-    private double _Angle;
-    private String _CurrentLife;
-    private Integer _CurrentPoints;
+    //class used to save each boat with the values needed, implements serializable too
+    
+    public ArrayList<Move> getMoves() {
+        return _Moves;
+    }
+    
+    public Integer getCurrentMove() {
+        return _CurrentMove;
+    }
+    
+    public Point getCoordenates() {
+        return _Coordenates;
+    }
+    
+    public double getAngle() {
+        return _Angle;
+    }
+    
+    public String getCurrentLife() {
+        return _CurrentLife;
+    }
+    
+    public Integer getCurrentPoints() {
+        return _CurrentPoints;
+    }
+    
     
     public SavedBoat(ArrayList<Move> pMove, Integer pCurrentMove, 
             Point pCoordenates, double pAngle, String pCurrentLife, 
@@ -34,46 +55,12 @@ public class SavedBoat implements Serializable {
         _CurrentPoints = pCurrentPoints;
         
     }
-
-    /**
-     * @return the _Moves
-     */
-    public ArrayList<Move> getMoves() {
-        return _Moves;
-    }
-
-    /**
-     * @return the _CurrentMove
-     */
-    public Integer getCurrentMove() {
-        return _CurrentMove;
-    }
-
-    /**
-     * @return the _Coordenates
-     */
-    public Point getCoordenates() {
-        return _Coordenates;
-    }
-
-    /**
-     * @return the _Angle
-     */
-    public double getAngle() {
-        return _Angle;
-    }
-
-    /**
-     * @return the _CurrentLife
-     */
-    public String getCurrentLife() {
-        return _CurrentLife;
-    }
-
-    /**
-     * @return the _CurrentPoints
-     */
-    public Integer getCurrentPoints() {
-        return _CurrentPoints;
-    }
+    
+    private ArrayList<Move> _Moves;
+    private Integer _CurrentMove;
+    private Point _Coordenates;
+    private double _Angle;
+    private String _CurrentLife;
+    private Integer _CurrentPoints;
+    
 }

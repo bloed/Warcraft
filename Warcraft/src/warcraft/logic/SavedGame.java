@@ -12,14 +12,22 @@ import java.io.Serializable;
  *
  * @author Xelop
  */
+//Class used to implement de serializable in order to safe the game in a serializable file
+
+
 public class SavedGame implements Serializable {
     
-    SavedBoat[] pSavedBoat;
-    Integer _CurrentAlive;
+    public SavedBoat[] getSavedBoats(){
+        return pSavedBoat;
+    }
     
-    public SavedGame(Boat[] pBoats, Integer pCurrentAlive, Integer pAmountBoats){
+    public Integer getAlive(){
+        return _CurrentAlive;
+    }
+    
+    public SavedGame(Boat[] pBoats, Integer pCurrentAlive){
         _CurrentAlive = pCurrentAlive;
-        pSavedBoat = new SavedBoat[pAmountBoats];
+        pSavedBoat = new SavedBoat[pBoats.length];
         setSavedBoats(pBoats);
     }
     
@@ -29,18 +37,15 @@ public class SavedGame implements Serializable {
             pSavedBoat[index] = new SavedBoat(currentBoat.getMoves(), currentBoat.getCurrentMove(),
                     new Point(currentBoat.getUIActions().getX(), currentBoat.getUIActions().getY()),
                     currentBoat.getUIActions().getCurrentAngle(), currentBoat.getUIActions().getCurrentLife(),
-                    currentBoat.getUIActions().getLifePoints());
+                    currentBoat.getCurrentLife());
         }
     }
-    public SavedBoat[] getSavedBoats(){
-        return pSavedBoat;
-    }
-    
-    public Integer getAlive(){
-        return _CurrentAlive;
-    }
+
     public void loadGame(){
         Game pGame = Game.getInstance();
         pGame.loadGame(this);
     }
+    
+    SavedBoat[] pSavedBoat;
+    Integer _CurrentAlive;
 }

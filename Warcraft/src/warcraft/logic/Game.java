@@ -11,6 +11,13 @@ import warcraft.UI.OceanInterface;
 public class Game implements Serializable {
     //this class contains all the boats and basically all the game. When saving the game only this class is saved.
     
+    public Integer getAliveBoats() {
+        return _AliveBoats;
+    }
+
+    public void setAliveBoats(Integer _AliveBoats) {
+        this._AliveBoats = _AliveBoats;
+    }
     
     public Game(){
         _BoatsArray = new Boat[Runtime.getRuntime().availableProcessors()];//creates boats depending of the quantity of processors
@@ -49,48 +56,29 @@ public class Game implements Serializable {
         _AliveBoats = pSaved.getAlive();
         SavedBoat[] savedBoats = pSaved.getSavedBoats();
         
-        
         for(int index = 0; index < _BoatsArray.length; index++){
-            
             SavedBoat currentSBoat = savedBoats[index];
-            
             _BoatsArray[index] = new Boat(currentSBoat.getMoves());
-            Boat currentBoat = _BoatsArray[index];
-            currentBoat.setCurrentMove(currentSBoat.getCurrentMove());
-            currentBoat.setSavedBoat(ocean, currentSBoat.getCoordenates(), this, currentSBoat.getCurrentLife(),
-                    currentSBoat.getCurrentPoints(), currentSBoat.getAngle());
             
+            Boat currentBoat = _BoatsArray[index];
+            
+            currentBoat.setSavedBoat(ocean, currentSBoat.getCoordenates(), this, currentSBoat.getCurrentLife(),
+                    currentSBoat.getCurrentPoints(), currentSBoat.getAngle(), currentSBoat.getCurrentMove());
         }
         startThreads();
-            /*private ArrayList<Move> _Moves;
-    private Integer _CurrentMove;
-    private Point _Coordenates;
-    private double _Angle;
-    private String _CurrentLife;
-    private Integer _CurrentPoints;*/
     }
     
-    
-    Boat[] _BoatsArray;
-    private static Game _Instance = null;
-    private Integer _AliveBoats;
-
-    /**
-     * @return the _AliveBoats
-     */
-    public Integer getAliveBoats() {
-        return _AliveBoats;
-    }
-
-    /**
-     * @param _AliveBoats the _AliveBoats to set
-     */
-    public void setAliveBoats(Integer _AliveBoats) {
-        this._AliveBoats = _AliveBoats;
+    public void pauseGame(){
+        for(int index = 0; index < _BoatsArray.length; index++){
+            _BoatsArray[index].setStop(true);
+        }
     }
     
     public SavedGame saveGame(){
-        return new SavedGame(_BoatsArray, _AliveBoats, _AliveBoats);
+        return new SavedGame(_BoatsArray, _AliveBoats);
     }
     
+    Boat[] _BoatsArray;
+    private static Game _Instance = null;
+    private Integer _AliveBoats;    
 }
