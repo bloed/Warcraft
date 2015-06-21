@@ -30,7 +30,7 @@ public class Utility {
     }
     public static Boolean collide(int pPosX, int pPosY, Boat[] pBoats, int pPosX2, int pPosY2, Boolean shoot, Boat pBoat){
 	for(int index = 0 ; index< pBoats.length; index++){
-            if(!pBoats[index].equals(pBoat)){
+            if(pBoats[index].getUIActions() != null && !pBoats[index].equals(pBoat)){
 		if(pPosX < pBoats[index].getUIActions().getX()+pBoats[index].getUIActions().getWidth()
                         && pPosX2 > pBoats[index].getUIActions().getX() 
                         && pPosY < pBoats[index].getUIActions().getY()+pBoats[index].getUIActions().getHeigth()
