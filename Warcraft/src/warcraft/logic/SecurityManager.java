@@ -64,10 +64,9 @@ public class SecurityManager {
     }
     private KeyPair generateKeys(String pPin){
         try{
-            
             byte[] seed = pPin.getBytes();
             KeyPairGenerator keysGenerator = KeyPairGenerator.getInstance("RSA");
-            keysGenerator.initialize(512, new SecureRandom(seed));
+            keysGenerator.initialize(Constants.KEY_SIZE, new SecureRandom(seed));
             KeyPair keyPair =  keysGenerator.generateKeyPair();
             return keyPair;
         }

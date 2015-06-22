@@ -59,8 +59,7 @@ public class MainMenu extends javax.swing.JFrame {
         _Play.addActionListener(new ActionListener() {
  
             public void actionPerformed(ActionEvent e)
-            { /////////////////////////////////////////////////Creo que hay que moverlo
-                TextManager textManager = TextManager.getInstance(); //Necesario??
+            { 
                 ThreadManager threadManager = ThreadManager.getInstance();
                 Game game = Game.getInstance();
                 game.setBoats(threadManager.mainStrategy());

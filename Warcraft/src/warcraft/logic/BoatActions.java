@@ -138,7 +138,7 @@ public class BoatActions  {
             
             if(Utility.collide(_X, _Y, _Game.getBoats(),
                         _X+newWidth, _Y+ newHeigth, false,_Boat)){
-                _CurrentAngle = _CurrentAngle+Constants.MAX_RAD_VAL;
+                _CurrentAngle = _CurrentAngle+Constants.MAX_RAD_VAL;//180
             }
             _Width = newWidth;
             _Heigth = newHeigth;
@@ -197,7 +197,7 @@ public class BoatActions  {
                     pPixels-=Constants.MOVE_DISTANCE;
             }else if(currentCos <= -1){ //move down
                 currentCos+=1;
-                if(_Label.getLocation().y+_Label.getSize().height+Constants.MOVE_DISTANCE < 650 && 
+                if(_Label.getLocation().y+_Label.getSize().height+Constants.MOVE_DISTANCE < Constants.SCREEN_HEIGTH && 
                         !Utility.collide(_X, _Y+Constants.MOVE_DISTANCE, _Game.getBoats(), _X+_Width,
                                 _Y+Constants.MOVE_DISTANCE+_Heigth, false,_Boat)){ 
                     
@@ -211,9 +211,9 @@ public class BoatActions  {
             if(currentSen >= 1){// move right
                 currentSen -= 1;
                 
-                if(_Label.getLocation().x+Constants.MOVE_DISTANCE+_Label.getSize().width < 900 &&
+                if(_Label.getLocation().x+Constants.MOVE_DISTANCE+_Label.getSize().width < Constants.SCREEN_WIDTH &&
                         !Utility.collide(_X+Constants.MOVE_DISTANCE, _Y, _Game.getBoats(), 
-                                _X+Constants.MOVE_DISTANCE+_Width, _Y+_Heigth, false,_Boat)){    //alambrado!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                                _X+Constants.MOVE_DISTANCE+_Width, _Y+_Heigth, false,_Boat)){  
                     
                     _Label.setLocation(_Label.getLocation().x+Constants.MOVE_DISTANCE, _Label.getLocation().y); //invertd logic
                     _X+=Constants.MOVE_DISTANCE;
@@ -298,10 +298,6 @@ public class BoatActions  {
             setCurrentLife("boat_lasthit.png");
         }
         _Label.setIcon(new ImageIcon(createTransformedImage(getCurrentLife(), _Label)));
-    }
-    public void displayAngle(){
-        ImageIcon newImage = new ImageIcon( createTransformedImage(_CurrentLife, _Label));
-        _Label.setIcon(newImage);
     }
     
     private String _CurrentLife;

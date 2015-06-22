@@ -31,6 +31,12 @@ public class SavedGame implements Serializable {
         setSavedBoats(pBoats);
     }
     
+
+    public void loadGame(){
+        Game pGame = Game.getInstance();
+        pGame.loadGame(this);
+    }
+    
     private void setSavedBoats(Boat[] pBoats){
         for(int index = 0; index < pBoats.length; index++){
             Boat currentBoat = pBoats[index];
@@ -39,11 +45,6 @@ public class SavedGame implements Serializable {
                     currentBoat.getUIActions().getCurrentAngle(), currentBoat.getUIActions().getCurrentLife(),
                     currentBoat.getCurrentLife());
         }
-    }
-
-    public void loadGame(){
-        Game pGame = Game.getInstance();
-        pGame.loadGame(this);
     }
     
     SavedBoat[] pSavedBoat;
